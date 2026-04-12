@@ -24,6 +24,8 @@ import {
   Trash2,
   X,
   Download,
+  Minus,
+  Plus,
 } from "lucide-react"
 
 // Types
@@ -196,6 +198,7 @@ export default function Bookstore() {
   const [paymentMethod, setPaymentMethod] = useState<string>("")
   const [readerBook, setReaderBook] = useState<Book | null>(null)
   const [showToast, setShowToast] = useState(false)
+  const [sortBy, setSortBy] = useState<string>("popular")
 
   // Filter books based on search and category
   const filteredBooks = mockBooks.filter((book) => {
@@ -207,6 +210,23 @@ export default function Bookstore() {
     const matchesCategory =
       !selectedCategory || book.category === selectedCategory
     return matchesSearch && matchesCategory
+  })
+
+  // Sort books
+  const sortedBooks = [...filteredBooks].sort((a, b) => {
+    switch (sortBy) {
+      case "price-asc":
+        return a.price - b.price
+      case "price-desc":
+        return b.price - a.price
+      case "alpha-asc":
+        return a.title.localeCompare(b.title)
+      case "alpha-desc":
+        return b.title.localeCompare(a.title)
+      case "popular":
+      default:
+        return a.id - b.id
+    }
   })
 
   // Cart functions
@@ -221,11 +241,23 @@ export default function Bookstore() {
     } else {
       setCart([...cart, { ...book, quantity: 1 }])
     }
-    setCurrentView("cart")
+    // Añadir al carrito sin cambiar de vista
   }
 
   const removeFromCart = (bookId: number) => {
     setCart(cart.filter((item) => item.id !== bookId))
+  }
+
+  const updateCartItemQuantity = (bookId: number, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      removeFromCart(bookId)
+      return
+    }
+    setCart(
+      cart.map((item) =>
+        item.id === bookId ? { ...item, quantity: newQuantity } : item
+      )
+    )
   }
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -259,7 +291,7 @@ export default function Bookstore() {
     <div className="min-h-screen bg-background">
       {/* Navbar */}
       <header className="sticky top-0 z-50 bg-[#1a2744] text-white shadow-lg">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+        <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-4 md:px-8">
           <button
             onClick={() => {
               setCurrentView("catalog")
@@ -293,102 +325,132 @@ export default function Bookstore() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-8">
+      <main className="mx-auto max-w-[1600px] px-4 md:px-8 py-8">
         {/* Catalog View */}
         {currentView === "catalog" && (
-          <div>
-            {/* Search Bar */}
-            <div className="mb-8">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Buscar por título, autor o categoría..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-background py-3 pl-12 pr-4 text-foreground shadow-sm transition-colors focus:border-[#1a2744] focus:outline-none focus:ring-2 focus:ring-[#1a2744]/20"
-                />
-              </div>
-            </div>
-
-            {/* Category Pills */}
-            <div className="mb-8 flex flex-wrap gap-3">
-              <button
-                onClick={() => setSelectedCategory(null)}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${!selectedCategory
-                  ? "bg-[#1a2744] text-white"
-                  : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                  }`}
-              >
-                Todos
-              </button>
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${selectedCategory === category
-                    ? "bg-[#1a2744] text-white"
-                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                    }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-
-            {/* Books Grid */}
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {filteredBooks.map((book) => (
-                <div
-                  key={book.id}
-                  className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
-                >
-                  {/* Book Cover */}
-                  <div
-                    className={`${book.coverColor} flex h-48 shrink-0 items-center justify-center`}
+          <div className="flex flex-col gap-8 md:flex-row">
+            {/* Left Sidebar */}
+            <aside className="w-full shrink-0 md:w-64 space-y-6">
+              {/* Category Filter */}
+              <div>
+                <h2 className="mb-4 text-lg font-semibold text-[#1a2744]">Categorías</h2>
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={() => setSelectedCategory(null)}
+                    className={`text-left rounded-lg px-4 py-2 text-sm font-medium transition-colors ${!selectedCategory
+                      ? "bg-[#1a2744] text-white"
+                      : "text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
+                      }`}
                   >
-                    <BookOpen className="size-16 text-white/80" />
-                  </div>
-                  {/* Book Info */}
-                  <div className="flex flex-1 flex-col p-4">
-                    <div className="flex">
-                      <Badge variant="secondary" className="mb-2">
-                        {book.category}
-                      </Badge>
-                    </div>
-                    <h3 className="mb-1 line-clamp-2 font-semibold text-card-foreground">
-                      {book.title}
-                    </h3>
-                    <p className="mb-3 text-sm text-muted-foreground">
-                      {book.author}
-                    </p>
-                    <div className="mt-auto flex items-center justify-between">
-                      <span className="text-lg font-bold text-[#1a2744]">
-                        {formatPrice(book.price)}
-                      </span>
-                      <Button
-                        onClick={() => {
-                          setSelectedBook(book)
-                          setCurrentView("detail")
-                        }}
-                        className="bg-amber-500 text-[#1a2744] hover:bg-amber-600"
-                        size="sm"
-                      >
-                        Ver detalle
-                      </Button>
-                    </div>
-                  </div>
+                    Todos
+                  </button>
+                  {categories.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      className={`text-left rounded-lg px-4 py-2 text-sm font-medium transition-colors ${selectedCategory === category
+                        ? "bg-[#1a2744] text-white"
+                        : "text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
+                        }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
                 </div>
-              ))}
-            </div>
-
-            {filteredBooks.length === 0 && (
-              <div className="py-12 text-center">
-                <p className="text-muted-foreground">
-                  No se encontraron libros que coincidan con tu búsqueda.
-                </p>
               </div>
-            )}
+            </aside>
+
+            {/* Main Content */}
+            <div className="flex-1">
+              <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                {/* Search Bar */}
+                <div className="relative flex-1 sm:max-w-md">
+                  <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    type="text"
+                    placeholder="Buscar por título, autor o categoría..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-background py-2.5 pl-12 pr-4 text-foreground shadow-sm transition-colors focus:border-[#1a2744] focus:outline-none focus:ring-2 focus:ring-[#1a2744]/20"
+                  />
+                </div>
+
+                {/* Sort Dropdown */}
+                <div className="w-full sm:w-56 shrink-0">
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-full rounded-lg border-border bg-background shadow-sm">
+                      <SelectValue placeholder="Ordenar por..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="popular">Más populares</SelectItem>
+                      <SelectItem value="price-asc">Precio: Menor a mayor</SelectItem>
+                      <SelectItem value="price-desc">Precio: Mayor a menor</SelectItem>
+                      <SelectItem value="alpha-asc">Alfabéticamente (A-Z)</SelectItem>
+                      <SelectItem value="alpha-desc">Alfabéticamente (Z-A)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Books Grid */}
+              <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                {sortedBooks.map((book) => (
+                  <div
+                    key={book.id}
+                    onClick={() => {
+                      setSelectedBook(book)
+                      setCurrentView("detail")
+                    }}
+                    className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all hover:shadow-md cursor-pointer hover:border-[#1a2744]/30"
+                  >
+                    {/* Book Cover */}
+                    <div
+                      className={`${book.coverColor} flex h-48 shrink-0 items-center justify-center`}
+                    >
+                      <BookOpen className="size-16 text-white/80 transition-transform duration-300 group-hover:scale-110" />
+                    </div>
+                    {/* Book Info */}
+                    <div className="flex flex-1 flex-col p-4">
+                      <div className="flex">
+                        <Badge variant="secondary" className="mb-2">
+                          {book.category}
+                        </Badge>
+                      </div>
+                      <h3 className="mb-1 line-clamp-2 font-semibold text-card-foreground group-hover:text-[#1a2744] transition-colors">
+                        {book.title}
+                      </h3>
+                      <p className="mb-3 text-sm text-muted-foreground">
+                        {book.author}
+                      </p>
+                      <div className="mt-auto flex items-center justify-between">
+                        <span className="text-lg font-bold text-[#1a2744]">
+                          {formatPrice(book.price)}
+                        </span>
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            addToCart(book)
+                          }}
+                          className="bg-amber-500 text-[#1a2744] hover:bg-amber-600 shrink-0"
+                          size="icon"
+                          title="Añadir al carrito"
+                        >
+                          <ShoppingCart className="size-5" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {sortedBooks.length === 0 && (
+                <div className="py-12 text-center">
+                  <p className="text-muted-foreground">
+                    No se encontraron libros que coincidan con tu búsqueda.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -464,6 +526,14 @@ export default function Bookstore() {
         {/* Cart View */}
         {currentView === "cart" && (
           <div>
+            <Button
+              variant="ghost"
+              onClick={() => setCurrentView("catalog")}
+              className="mb-6"
+            >
+              <ArrowLeft className="mr-2 size-4" />
+              Volver al catálogo
+            </Button>
             <h1 className="mb-8 text-2xl font-bold text-[#1a2744]">
               Carrito de Compras
             </h1>
@@ -488,15 +558,19 @@ export default function Bookstore() {
                   {cart.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-4 rounded-lg border border-border bg-card p-4"
+                      onClick={() => {
+                        setSelectedBook(item)
+                        setCurrentView("detail")
+                      }}
+                      className="flex items-center gap-4 rounded-lg border border-border bg-card p-4 hover:border-[#1a2744]/30 hover:shadow-md transition-all cursor-pointer group"
                     >
                       <div
                         className={`${item.coverColor} flex size-20 shrink-0 items-center justify-center rounded`}
                       >
-                        <BookOpen className="size-8 text-white/80" />
+                        <BookOpen className="size-8 text-white/80 transition-transform duration-300 group-hover:scale-110" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-card-foreground">
+                        <h3 className="font-semibold text-card-foreground group-hover:text-[#1a2744] transition-colors">
                           {item.title}
                         </h3>
                         <p className="text-sm text-muted-foreground">
@@ -506,10 +580,40 @@ export default function Bookstore() {
                           {formatPrice(item.price)}
                         </p>
                       </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="size-8"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            updateCartItemQuantity(item.id, item.quantity - 1)
+                          }}
+                        >
+                          <Minus className="size-4" />
+                        </Button>
+                        <span className="w-8 text-center font-medium">
+                          {item.quantity}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="size-8"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            updateCartItemQuantity(item.id, item.quantity + 1)
+                          }}
+                        >
+                          <Plus className="size-4" />
+                        </Button>
+                      </div>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          removeFromCart(item.id)
+                        }}
                         className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                       >
                         <Trash2 className="size-5" />
@@ -554,6 +658,54 @@ export default function Bookstore() {
                     </Select>
                   </div>
 
+                  {(paymentMethod === "credit" || paymentMethod === "debit") && (
+                    <div className="mb-4 space-y-3 rounded-lg border border-border bg-muted/50 p-4">
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-card-foreground">
+                          Número de tarjeta
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="0000 0000 0000 0000"
+                          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744]"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-sm font-medium text-card-foreground">
+                            Vencimiento
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="MM/AA"
+                            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744]"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-sm font-medium text-card-foreground">
+                            CVC
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="123"
+                            maxLength={4}
+                            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744]"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-card-foreground">
+                          Nombre del titular
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Juan Pérez"
+                          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744]"
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   <Button
                     onClick={confirmPurchase}
                     disabled={!paymentMethod}
@@ -570,6 +722,14 @@ export default function Bookstore() {
         {/* Library View */}
         {currentView === "library" && (
           <div>
+            <Button
+              variant="ghost"
+              onClick={() => setCurrentView("catalog")}
+              className="mb-6"
+            >
+              <ArrowLeft className="mr-2 size-4" />
+              Volver al catálogo
+            </Button>
             <h1 className="mb-8 text-2xl font-bold text-[#1a2744]">
               Mi Biblioteca
             </h1>
