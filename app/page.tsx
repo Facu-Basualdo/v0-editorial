@@ -164,6 +164,22 @@ const mockBooks: Book[] = [
     ],
     coverColor: "bg-indigo-600",
   },
+  {
+    id: 9,
+    title: "Análisis y diseño de sistemas",
+    author: "Kenneth E. Kendall, Julie E. Kendall",
+    category: "Informática",
+    price: 20200,
+    description:
+      "Fundamentos de finanzas empresariales: valuación, estructura de capital, presupuesto de inversiones y gestión del riesgo. Casos de empresas argentinas y latinoamericanas. Herramientas para la toma de decisiones financieras.",
+    preview: [
+      "El objetivo del libro es brindar a los estudiantes las competencias necesarias para el desarrollo de software y la implementación de tecnología, tiene un enfoque integral, ya que se relaciona de manera interdisciplinaria con otras materias.",
+      "Esto permite que los estudiantes adquieran habilidades que son esenciales para su formación profesional. Se espera que los estudiantes sean capaces de: Modelar los procesos de desarrollo de software,",
+      "ya sea a través de la UML o enfoques jerárquicos, analizar y diseñar sistemas informáticos, aprender sobre el ciclo de vida del software, desde la planificación hasta la implementación y el mantenimiento, aprender,",
+      "aplicar la cultura profesional en el desarrollo de software, aplicar soluciones informáticas para resolver problemas. Los contenidos de desarrollo de software e Implementación de Tecnología es una asignatura esencial para la formación de profesionales en el ámbito de la informática. Proporciona a los estudiantes las competencias necesarias para el desarrollo de software y la implementación de tecnología, lo que les permitirá desempeñarse exitosamente en el campo laboral."
+    ],
+    coverColor: "bg-indigo-600",
+  }
 ]
 
 const categories = ["Informática", "Derecho", "Administración", "Economía"]
@@ -299,11 +315,10 @@ export default function Bookstore() {
             <div className="mb-8 flex flex-wrap gap-3">
               <button
                 onClick={() => setSelectedCategory(null)}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                  !selectedCategory
-                    ? "bg-[#1a2744] text-white"
-                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                }`}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${!selectedCategory
+                  ? "bg-[#1a2744] text-white"
+                  : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                  }`}
               >
                 Todos
               </button>
@@ -311,11 +326,10 @@ export default function Bookstore() {
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                    selectedCategory === category
-                      ? "bg-[#1a2744] text-white"
-                      : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                  }`}
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${selectedCategory === category
+                    ? "bg-[#1a2744] text-white"
+                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                    }`}
                 >
                   {category}
                 </button>
@@ -327,26 +341,28 @@ export default function Bookstore() {
               {filteredBooks.map((book) => (
                 <div
                   key={book.id}
-                  className="group overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
+                  className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
                 >
                   {/* Book Cover */}
                   <div
-                    className={`${book.coverColor} flex h-48 items-center justify-center`}
+                    className={`${book.coverColor} flex h-48 shrink-0 items-center justify-center`}
                   >
                     <BookOpen className="size-16 text-white/80" />
                   </div>
                   {/* Book Info */}
-                  <div className="p-4">
-                    <Badge variant="secondary" className="mb-2">
-                      {book.category}
-                    </Badge>
+                  <div className="flex flex-1 flex-col p-4">
+                    <div className="flex">
+                      <Badge variant="secondary" className="mb-2">
+                        {book.category}
+                      </Badge>
+                    </div>
                     <h3 className="mb-1 line-clamp-2 font-semibold text-card-foreground">
                       {book.title}
                     </h3>
                     <p className="mb-3 text-sm text-muted-foreground">
                       {book.author}
                     </p>
-                    <div className="flex items-center justify-between">
+                    <div className="mt-auto flex items-center justify-between">
                       <span className="text-lg font-bold text-[#1a2744]">
                         {formatPrice(book.price)}
                       </span>
@@ -576,23 +592,23 @@ export default function Bookstore() {
                 {library.map((book, index) => (
                   <div
                     key={`${book.id}-${index}`}
-                    className="overflow-hidden rounded-lg border border-border bg-card shadow-sm"
+                    className="flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm"
                   >
                     {/* Book Cover */}
                     <div
-                      className={`${book.coverColor} flex h-40 items-center justify-center`}
+                      className={`${book.coverColor} flex h-40 shrink-0 items-center justify-center`}
                     >
                       <BookOpen className="size-12 text-white/80" />
                     </div>
                     {/* Book Info */}
-                    <div className="p-4">
+                    <div className="flex flex-1 flex-col p-4">
                       <h3 className="mb-1 line-clamp-2 font-semibold text-card-foreground">
                         {book.title}
                       </h3>
                       <p className="mb-4 text-sm text-muted-foreground">
                         {book.author}
                       </p>
-                      <div className="flex gap-2">
+                      <div className="mt-auto flex gap-2">
                         <Button
                           onClick={() => setReaderBook(book)}
                           className="flex-1 bg-[#1a2744] text-white hover:bg-[#1a2744]/90"
