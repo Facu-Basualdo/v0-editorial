@@ -17,6 +17,13 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu"
+import {
   ShoppingCart,
   BookOpen,
   Search,
@@ -26,6 +33,13 @@ import {
   Download,
   Minus,
   Plus,
+  User,
+  LogOut,
+  Settings,
+  Save,
+  Lock,
+  AlertTriangle,
+  Heart,
 } from "lucide-react"
 
 // Types
@@ -38,10 +52,6 @@ interface Book {
   description: string
   preview: string[]
   coverColor: string
-}
-
-interface CartItem extends Book {
-  quantity: number
 }
 
 // Mock Data
@@ -186,18 +196,29 @@ const mockBooks: Book[] = [
 
 const categories = ["Informática", "Derecho", "Administración", "Economía"]
 
-type View = "catalog" | "detail" | "cart" | "library"
+type View = "login" | "catalog" | "detail" | "cart" | "library" | "account" | "favorites"
 
 export default function Bookstore() {
   const [currentView, setCurrentView] = useState<View>("catalog")
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [loginError, setLoginError] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [selectedBook, setSelectedBook] = useState<Book | null>(null)
-  const [cart, setCart] = useState<CartItem[]>([])
+  const [cart, setCart] = useState<Book[]>([])
   const [library, setLibrary] = useState<Book[]>([])
+  const [favorites, setFavorites] = useState<Book[]>([])
+  const [loginPromptAction, setLoginPromptAction] = useState<"favorite" | "cart" | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [paymentMethod, setPaymentMethod] = useState<string>("")
   const [readerBook, setReaderBook] = useState<Book | null>(null)
-  const [showToast, setShowToast] = useState(false)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const [profileData, setProfileData] = useState({
+    name: "Usuario de Prueba",
+    email: "usuario@ejemplo.com",
+    phone: "+54 11 1234-5678"
+  })
   const [sortBy, setSortBy] = useState<string>("popular")
 
   // Filter books based on search and category
@@ -231,51 +252,58 @@ export default function Bookstore() {
 
   // Cart functions
   const addToCart = (book: Book) => {
+    if (!isLoggedIn) {
+      setLoginPromptAction("cart")
+      return
+    }
     const existing = cart.find((item) => item.id === book.id)
     if (existing) {
-      setCart(
-        cart.map((item) =>
-          item.id === book.id ? { ...item, quantity: item.quantity + 1 } : item
-        )
-      )
+      setCart(cart.filter((item) => item.id !== book.id))
+      showToast("Eliminado del carrito")
     } else {
-      setCart([...cart, { ...book, quantity: 1 }])
+      setCart([...cart, book])
+      showToast("Añadido al carrito")
     }
-    // Añadir al carrito sin cambiar de vista
   }
 
   const removeFromCart = (bookId: number) => {
     setCart(cart.filter((item) => item.id !== bookId))
   }
 
-  const updateCartItemQuantity = (bookId: number, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      removeFromCart(bookId)
-      return
-    }
-    setCart(
-      cart.map((item) =>
-        item.id === bookId ? { ...item, quantity: newQuantity } : item
-      )
-    )
-  }
-
-  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0)
+  const cartTotal = cart.reduce((sum, item) => sum + item.price, 0)
+  const cartCount = cart.length
 
   // Purchase function
   const confirmPurchase = () => {
-    const purchasedBooks = cart.map(({ quantity, ...book }) => book)
-    setLibrary([...library, ...purchasedBooks])
+    setLibrary([...library, ...cart])
     setCart([])
     setPaymentMethod("")
     setCurrentView("library")
   }
 
-  // Show download toast
+  // Show toast
+  const showToast = (message: string) => {
+    setToastMessage(message)
+    setTimeout(() => setToastMessage(null), 3000)
+  }
+
+  const toggleFavorite = (book: Book) => {
+    if (!isLoggedIn) {
+      setLoginPromptAction("favorite")
+      return
+    }
+
+    if (favorites.some(fav => fav.id === book.id)) {
+      setFavorites(favorites.filter(fav => fav.id !== book.id))
+      showToast("Eliminado de favoritos")
+    } else {
+      setFavorites([...favorites, book])
+      showToast("Añadido a favoritos")
+    }
+  }
+
   const handleDownload = () => {
-    setShowToast(true)
-    setTimeout(() => setShowToast(false), 3000)
+    showToast("Descarga iniciada")
   }
 
   // Format price in ARS
@@ -287,9 +315,20 @@ export default function Bookstore() {
     }).format(price)
   }
 
+  const handleLogin = () => {
+    if (username.trim() === "usuario@ejemplo.com" && password === "123456") {
+      setLoginError(false)
+      setIsLoggedIn(true)
+      setCurrentView("catalog")
+    } else {
+      setLoginError(true)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navbar */}
+      {currentView !== "login" && (
       <header className="sticky top-0 z-50 bg-[#1a2744] text-white shadow-lg">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-4 md:px-8">
           <button
@@ -304,12 +343,64 @@ export default function Bookstore() {
           </button>
 
           <nav className="flex items-center gap-6">
-            <button
-              onClick={() => setCurrentView("library")}
-              className="text-sm font-medium transition-colors hover:text-amber-400"
-            >
-              Mi Biblioteca
-            </button>
+            {isLoggedIn ? (
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setCurrentView("favorites")}
+                  className="flex items-center justify-center transition-opacity hover:opacity-80"
+                  title="Mis Favoritos"
+                >
+                  <Heart className="size-6 text-amber-500 fill-amber-500" />
+                </button>
+                <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 rounded-full bg-amber-500 text-[#1a2744] hover:bg-amber-400 hover:text-[#1a2744] transition-colors"
+                  >
+                    <User className="size-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem
+                    onClick={() => setCurrentView("library")}
+                    className="cursor-pointer focus:bg-accent focus:text-accent-foreground"
+                  >
+                    <BookOpen className="mr-2 size-4" />
+                    <span>Mi Biblioteca</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setCurrentView("account")}
+                    className="cursor-pointer focus:bg-accent focus:text-accent-foreground"
+                  >
+                    <Settings className="mr-2 size-4" />
+                    <span>Mi Cuenta</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setIsLoggedIn(false)
+                      setCurrentView("login")
+                      setUsername("")
+                      setPassword("")
+                    }}
+                    className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
+                  >
+                    <LogOut className="mr-2 size-4" />
+                    <span>Cerrar sesión</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              </div>
+            ) : (
+              <Button
+                onClick={() => setCurrentView("login")}
+                className="h-8 rounded-full bg-amber-500 px-4 text-xs font-bold text-[#1a2744] hover:bg-amber-400 transition-colors"
+              >
+                Iniciar Sesión
+              </Button>
+            )}
             <button
               onClick={() => setCurrentView("cart")}
               className="relative transition-opacity hover:opacity-80"
@@ -324,8 +415,73 @@ export default function Bookstore() {
           </nav>
         </div>
       </header>
+      )}
 
-      <main className="mx-auto max-w-[1600px] px-4 md:px-8 py-8">
+      <main className={`mx-auto max-w-[1600px] px-4 md:px-8 py-8 ${currentView === "login" ? "flex min-h-screen items-center justify-center p-4" : ""}`}>
+        {/* Login View */}
+        {currentView === "login" && (
+          <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-xl">
+            <div className="mb-8 flex flex-col items-center">
+              <div className="mb-4 flex size-14 items-center justify-center rounded-xl bg-[#1a2744] shadow-md">
+                <BookOpen className="size-7 text-white" />
+              </div>
+              <h1 className="text-2xl font-bold text-[#1a2744]">EditorialAcadémica</h1>
+              <p className="mt-2 text-sm text-muted-foreground">Ingresa tus credenciales para continuar</p>
+            </div>
+            
+            <div className="space-y-5">
+              {loginError && (
+                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-center text-sm font-medium text-red-600">
+                  Usuario o contraseña incorrectos. Podés usar:<br/> <span className="font-bold">usuario@ejemplo.com</span> / <span className="font-bold">123456</span>
+                </div>
+              )}
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-card-foreground">Email / Usuario</label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => {
+                    setUsername(e.target.value)
+                    setLoginError(false)
+                  }}
+                  placeholder="usuario@ejemplo.com"
+                  className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-foreground transition-all hover:border-[#1a2744]/50 focus:border-[#1a2744] focus:outline-none focus:ring-4 focus:ring-[#1a2744]/10"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-card-foreground">Contraseña</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                    setLoginError(false)
+                  }}
+                  placeholder="••••••••"
+                  className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-foreground transition-all hover:border-[#1a2744]/50 focus:border-[#1a2744] focus:outline-none focus:ring-4 focus:ring-[#1a2744]/10"
+                />
+                <div className="flex justify-center pt-1">
+                  <button type="button" className="text-sm font-medium text-[#1a2744] hover:underline focus:outline-none">Olvidé mi contraseña</button>
+                </div>
+              </div>
+              <Button
+                onClick={handleLogin}
+                className="mt-6 w-full bg-[#1a2744] py-6 text-base font-semibold text-white transition-all hover:bg-[#1a2744]/90 hover:shadow-lg disabled:opacity-50"
+                disabled={!username || !password}
+              >
+                Iniciar Sesión
+              </Button>
+              
+              <div className="mt-6 text-center text-sm text-muted-foreground">
+                ¿No tienes una cuenta?{" "}
+                <button type="button" className="font-semibold text-[#1a2744] hover:underline focus:outline-none">
+                  Crear cuenta
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Catalog View */}
         {currentView === "catalog" && (
           <div className="flex flex-col gap-8 md:flex-row">
@@ -426,17 +582,31 @@ export default function Bookstore() {
                         <span className="text-lg font-bold text-[#1a2744]">
                           {formatPrice(book.price)}
                         </span>
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            addToCart(book)
-                          }}
-                          className="bg-amber-500 text-[#1a2744] hover:bg-amber-600 shrink-0"
-                          size="icon"
-                          title="Añadir al carrito"
-                        >
-                          <ShoppingCart className="size-5" />
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              toggleFavorite(book)
+                            }}
+                            variant="ghost"
+                            size="icon"
+                            className="text-amber-500 hover:text-amber-600 hover:bg-amber-50"
+                            title={favorites.some(fav => fav.id === book.id) ? "Quitar de favoritos" : "Añadir a favoritos"}
+                          >
+                            <Heart className={`size-5 ${favorites.some(fav => fav.id === book.id) ? "fill-amber-500" : ""}`} />
+                          </Button>
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              addToCart(book)
+                            }}
+                            className={`${cart.some(item => item.id === book.id) ? "bg-amber-600" : "bg-amber-500"} text-[#1a2744] hover:bg-amber-600 shrink-0`}
+                            size="icon"
+                            title={cart.some(item => item.id === book.id) ? "Quitar del carrito" : "Añadir al carrito"}
+                          >
+                            <ShoppingCart className={`size-5 ${cart.some(item => item.id === book.id) ? "fill-[#1a2744]" : ""}`} />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -492,14 +662,24 @@ export default function Bookstore() {
                   <span className="text-3xl font-bold text-[#1a2744]">
                     {formatPrice(selectedBook.price)}
                   </span>
-                  <Button
-                    onClick={() => addToCart(selectedBook)}
-                    className="bg-amber-500 text-[#1a2744] hover:bg-amber-600"
-                    size="lg"
-                  >
-                    <ShoppingCart className="mr-2 size-5" />
-                    Agregar al carrito
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => toggleFavorite(selectedBook)}
+                      variant="outline"
+                      size="icon"
+                      className="border-amber-500 text-amber-500 hover:bg-amber-50 h-11 w-11"
+                    >
+                      <Heart className={`size-5 ${favorites.some(fav => fav.id === selectedBook.id) ? "fill-amber-500" : ""}`} />
+                    </Button>
+                    <Button
+                      onClick={() => addToCart(selectedBook)}
+                      className={`${cart.some(item => item.id === selectedBook.id) ? "bg-amber-600" : "bg-amber-500"} text-[#1a2744] hover:bg-amber-600`}
+                      size="lg"
+                    >
+                      <ShoppingCart className={`mr-2 size-5 ${cart.some(item => item.id === selectedBook.id) ? "fill-[#1a2744]" : ""}`} />
+                      {cart.some(item => item.id === selectedBook.id) ? "Quitar del carrito" : "Agregar al carrito"}
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Preview Section */}
@@ -579,33 +759,6 @@ export default function Bookstore() {
                         <p className="mt-1 font-bold text-[#1a2744]">
                           {formatPrice(item.price)}
                         </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="size-8"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            updateCartItemQuantity(item.id, item.quantity - 1)
-                          }}
-                        >
-                          <Minus className="size-4" />
-                        </Button>
-                        <span className="w-8 text-center font-medium">
-                          {item.quantity}
-                        </span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="size-8"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            updateCartItemQuantity(item.id, item.quantity + 1)
-                          }}
-                        >
-                          <Plus className="size-4" />
-                        </Button>
                       </div>
                       <Button
                         variant="ghost"
@@ -719,6 +872,96 @@ export default function Bookstore() {
           </div>
         )}
 
+        {/* Favorites View */}
+        {currentView === "favorites" && (
+          <div>
+            <Button
+              variant="ghost"
+              onClick={() => setCurrentView("catalog")}
+              className="mb-6"
+            >
+              <ArrowLeft className="mr-2 size-4" />
+              Volver al catálogo
+            </Button>
+            <h1 className="mb-8 text-2xl font-bold text-[#1a2744]">
+              Mis Favoritos
+            </h1>
+
+            {favorites.length === 0 ? (
+              <div className="py-12 text-center">
+                <Heart className="mx-auto mb-4 size-16 text-muted-foreground" />
+                <p className="mb-4 text-muted-foreground">
+                  Aún no tienes libros favoritos
+                </p>
+                <Button
+                  onClick={() => setCurrentView("catalog")}
+                  className="bg-amber-500 text-[#1a2744] hover:bg-amber-600"
+                >
+                  Explorar catálogo
+                </Button>
+              </div>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {favorites.map((book, index) => (
+                  <div
+                    key={`${book.id}-${index}`}
+                    onClick={() => {
+                      setSelectedBook(book)
+                      setCurrentView("detail")
+                    }}
+                    className="flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm cursor-pointer hover:shadow-md hover:border-[#1a2744]/30 transition-all"
+                  >
+                    {/* Book Cover */}
+                    <div
+                      className={`${book.coverColor} flex h-40 shrink-0 items-center justify-center`}
+                    >
+                      <BookOpen className="size-12 text-white/80" />
+                    </div>
+                    {/* Book Info */}
+                    <div className="flex flex-1 flex-col p-4">
+                      <h3 className="mb-1 line-clamp-2 font-semibold text-card-foreground">
+                        {book.title}
+                      </h3>
+                      <p className="mb-4 text-sm text-muted-foreground">
+                        {book.author}
+                      </p>
+                      <div className="mt-auto flex items-center justify-between">
+                        <span className="font-bold text-[#1a2744]">
+                          {formatPrice(book.price)}
+                        </span>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              toggleFavorite(book)
+                            }}
+                            variant="ghost"
+                            size="icon"
+                            className="text-amber-500 hover:text-amber-600 hover:bg-amber-50"
+                          >
+                            <Heart className="size-5 fill-amber-500" />
+                          </Button>
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              addToCart(book)
+                            }}
+                            className={`${cart.some(item => item.id === book.id) ? "bg-amber-600" : "bg-amber-500"} text-[#1a2744] hover:bg-amber-600 shrink-0`}
+                            size="icon"
+                            title={cart.some(item => item.id === book.id) ? "Quitar del carrito" : "Añadir al carrito"}
+                          >
+                            <ShoppingCart className={`size-5 ${cart.some(item => item.id === book.id) ? "fill-[#1a2744]" : ""}`} />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Library View */}
         {currentView === "library" && (
           <div>
@@ -794,6 +1037,159 @@ export default function Bookstore() {
             )}
           </div>
         )}
+
+        {/* Account View */}
+        {currentView === "account" && (
+          <div className="mx-auto max-w-3xl">
+            <Button
+              variant="ghost"
+              onClick={() => setCurrentView("catalog")}
+              className="mb-6"
+            >
+              <ArrowLeft className="mr-2 size-4" />
+              Volver al catálogo
+            </Button>
+            <h1 className="mb-8 text-2xl font-bold text-[#1a2744]">
+              Ajustes de mi cuenta
+            </h1>
+
+            <div className="space-y-8">
+              {/* Profile Details */}
+              <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+                <div className="mb-6 flex items-center gap-3">
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-[#1a2744]/10">
+                    <User className="size-5 text-[#1a2744]" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-card-foreground">Información Personal</h2>
+                    <p className="text-sm text-muted-foreground">Actualizá tus datos de contacto.</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-card-foreground">Nombre completo</label>
+                      <input
+                        type="text"
+                        value={profileData.name}
+                        onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                        className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744]"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-card-foreground">Teléfono</label>
+                      <input
+                        type="tel"
+                        value={profileData.phone}
+                        onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
+                        className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744]"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-card-foreground">Correo electrónico</label>
+                    <input
+                      type="email"
+                      value={profileData.email}
+                      onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                      className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744]"
+                    />
+                  </div>
+                  <div className="flex justify-end pt-2">
+                    <Button onClick={() => showToast("Perfil actualizado")} className="bg-[#1a2744] text-white hover:bg-[#1a2744]/90">
+                      <Save className="mr-2 size-4" />
+                      Guardar cambios
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Password Section */}
+              <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+                <div className="mb-6 flex items-center gap-3">
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-[#1a2744]/10">
+                    <Lock className="size-5 text-[#1a2744]" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-card-foreground">Seguridad</h2>
+                    <p className="text-sm text-muted-foreground">Modificá tu contraseña.</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-card-foreground">Contraseña actual</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744]"
+                    />
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-card-foreground">Nueva contraseña</label>
+                      <input
+                        type="password"
+                        placeholder="••••••••"
+                        className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744]"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-card-foreground">Confirmar nueva contraseña</label>
+                      <input
+                        type="password"
+                        placeholder="••••••••"
+                        className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744]"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end pt-2">
+                    <Button variant="outline" onClick={() => showToast("Contraseña actualizada")} className="border-[#1a2744] text-[#1a2744] hover:bg-[#1a2744]/5">
+                      Cambiar contraseña
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Danger Zone */}
+              <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-6">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-destructive/10">
+                    <AlertTriangle className="size-5 text-destructive" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-destructive">Zona de Peligro</h2>
+                    <p className="text-sm text-destructive/80">Cuidado, esta acción es irreversible.</p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between border-t border-destructive/10 pt-4">
+                  <div className="space-y-1">
+                    <h3 className="font-medium text-card-foreground">Eliminar cuenta</h3>
+                    <p className="text-sm text-muted-foreground w-full max-w-md">
+                      Una vez que elimines tu cuenta, no hay vuelta atrás. Se borrará toda tu información, incluyendo los libros en tu biblioteca.
+                    </p>
+                  </div>
+                  <Button 
+                    variant="destructive" 
+                    onClick={() => {
+                      if(window.confirm("¿Estás seguro que querés eliminar tu cuenta? Esta acción no se puede deshacer.")) {
+                        setIsLoggedIn(false)
+                        setCurrentView("login")
+                        setUsername("")
+                        setPassword("")
+                        showToast("Cuenta eliminada correctamente")
+                      }
+                    }}
+                  >
+                    Eliminar mi cuenta
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Reader Modal */}
@@ -821,14 +1217,47 @@ export default function Bookstore() {
           </div>
         </DialogContent>
       </Dialog>
+      {/* Login Prompt Dialog */}
+      <Dialog open={loginPromptAction !== null} onOpenChange={(open) => !open && setLoginPromptAction(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-[#1a2744]">
+              Acción requerida
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col items-center justify-center space-y-4 py-4 text-center">
+            <AlertTriangle className="size-12 text-amber-500" />
+            <p className="text-muted-foreground">
+              {loginPromptAction === "favorite" 
+                ? "Para agregar libros a tus favoritos necesitas iniciar sesión en tu cuenta."
+                : "Para añadir libros al carrito necesitas iniciar sesión en tu cuenta."}
+            </p>
+            <Button
+              onClick={() => {
+                setLoginPromptAction(null)
+                setCurrentView("login")
+              }}
+              className="mt-4 w-full bg-[#1a2744] hover:bg-[#1a2744]/90 text-white"
+            >
+              Ir a Iniciar Sesión
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setLoginPromptAction(null)}
+              className="w-full"
+            >
+              Cancelar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Toast Notification */}
-      {showToast && (
+      {toastMessage && (
         <div className="fixed bottom-4 right-4 z-50 flex items-center gap-3 rounded-lg bg-[#1a2744] px-4 py-3 text-white shadow-lg">
-          <Download className="size-5" />
-          <span>Descarga iniciada</span>
+          <span>{toastMessage}</span>
           <button
-            onClick={() => setShowToast(false)}
+            onClick={() => setToastMessage(null)}
             className="ml-2 hover:opacity-80"
           >
             <X className="size-4" />
