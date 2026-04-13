@@ -339,7 +339,7 @@ export default function Bookstore() {
             className="flex items-center gap-2 text-xl font-bold transition-opacity hover:opacity-80"
           >
             <BookOpen className="size-6" />
-            <span>EditorialAcadémica</span>
+            <span>MercadoLibro</span>
           </button>
 
           <nav className="flex items-center gap-6">
@@ -425,7 +425,7 @@ export default function Bookstore() {
               <div className="mb-4 flex size-14 items-center justify-center rounded-xl bg-[#1a2744] shadow-md">
                 <BookOpen className="size-7 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-[#1a2744]">EditorialAcadémica</h1>
+              <h1 className="text-2xl font-bold text-[#1a2744]">MercadoLibro</h1>
               <p className="mt-2 text-sm text-muted-foreground">Ingresa tus credenciales para continuar</p>
             </div>
             
