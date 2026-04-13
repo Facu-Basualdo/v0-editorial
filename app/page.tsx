@@ -381,7 +381,7 @@ export default function Bookstore() {
                   <DropdownMenuItem
                     onClick={() => {
                       setIsLoggedIn(false)
-                      setCurrentView("login")
+                      setCurrentView("catalog")
                       setUsername("")
                       setPassword("")
                     }}
