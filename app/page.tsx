@@ -183,12 +183,9 @@ const mockBooks: Book[] = [
     category: "Informática",
     price: 20200,
     description:
-      "Fundamentos de finanzas empresariales: valuación, estructura de capital, presupuesto de inversiones y gestión del riesgo. Casos de empresas argentinas y latinoamericanas. Herramientas para la toma de decisiones financieras.",
-    preview: [
       "El objetivo del libro es brindar a los estudiantes las competencias necesarias para el desarrollo de software y la implementación de tecnología, tiene un enfoque integral, ya que se relaciona de manera interdisciplinaria con otras materias.",
-      "Esto permite que los estudiantes adquieran habilidades que son esenciales para su formación profesional. Se espera que los estudiantes sean capaces de: Modelar los procesos de desarrollo de software,",
-      "ya sea a través de la UML o enfoques jerárquicos, analizar y diseñar sistemas informáticos, aprender sobre el ciclo de vida del software, desde la planificación hasta la implementación y el mantenimiento, aprender,",
-      "aplicar la cultura profesional en el desarrollo de software, aplicar soluciones informáticas para resolver problemas. Los contenidos de desarrollo de software e Implementación de Tecnología es una asignatura esencial para la formación de profesionales en el ámbito de la informática. Proporciona a los estudiantes las competencias necesarias para el desarrollo de software y la implementación de tecnología, lo que les permitirá desempeñarse exitosamente en el campo laboral."
+    preview: [
+      "Se espera que los estudiantes sean capaces de: Modelar los procesos de desarrollo de software, ya sea a través de la UML o enfoques jerárquicos, analizar y diseñar sistemas informáticos, aprender sobre el ciclo de vida del software, desde la planificación hasta la implementación y el mantenimiento, aprender, aplicar la cultura profesional en el desarrollo de software, aplicar soluciones informáticas para resolver problemas. Los contenidos de desarrollo de software e Implementación de Tecnología es una asignatura esencial para la formación de profesionales en el ámbito de la informática. Proporciona a los estudiantes las competencias necesarias para el desarrollo de software y la implementación de tecnología, lo que les permitirá desempeñarse exitosamente en el campo laboral."
     ],
     coverColor: "bg-indigo-600",
   }
@@ -326,98 +323,98 @@ export default function Bookstore() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Navbar */}
       {currentView !== "login" && (
-      <header className="sticky top-0 z-50 bg-[#1a2744] text-white shadow-lg">
-        <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-4 md:px-8">
-          <button
-            onClick={() => {
-              setCurrentView("catalog")
-              setSelectedBook(null)
-            }}
-            className="flex items-center gap-2 text-xl font-bold transition-opacity hover:opacity-80"
-          >
-            <BookOpen className="size-6" />
-            <span>MercadoLibro</span>
-          </button>
-
-          <nav className="flex items-center gap-6">
-            {isLoggedIn ? (
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setCurrentView("favorites")}
-                  className="flex items-center justify-center transition-opacity hover:opacity-80"
-                  title="Mis Favoritos"
-                >
-                  <Heart className="size-6 text-amber-500 fill-amber-500" />
-                </button>
-                <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 rounded-full bg-amber-500 text-[#1a2744] hover:bg-amber-400 hover:text-[#1a2744] transition-colors"
-                  >
-                    <User className="size-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem
-                    onClick={() => setCurrentView("library")}
-                    className="cursor-pointer focus:bg-accent focus:text-accent-foreground"
-                  >
-                    <BookOpen className="mr-2 size-4" />
-                    <span>Mi Biblioteca</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => setCurrentView("account")}
-                    className="cursor-pointer focus:bg-accent focus:text-accent-foreground"
-                  >
-                    <Settings className="mr-2 size-4" />
-                    <span>Mi Cuenta</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setIsLoggedIn(false)
-                      setCurrentView("catalog")
-                      setUsername("")
-                      setPassword("")
-                    }}
-                    className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
-                  >
-                    <LogOut className="mr-2 size-4" />
-                    <span>Cerrar sesión</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              </div>
-            ) : (
-              <Button
-                onClick={() => setCurrentView("login")}
-                className="h-8 rounded-full bg-amber-500 px-4 text-xs font-bold text-[#1a2744] hover:bg-amber-400 transition-colors"
-              >
-                Iniciar Sesión
-              </Button>
-            )}
+        <header className="sticky top-0 z-50 bg-[#1a2744] text-white shadow-lg">
+          <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-4 md:px-8">
             <button
-              onClick={() => setCurrentView("cart")}
-              className="relative transition-opacity hover:opacity-80"
+              onClick={() => {
+                setCurrentView("catalog")
+                setSelectedBook(null)
+              }}
+              className="flex items-center gap-2 text-xl font-bold transition-opacity hover:opacity-80"
             >
-              <ShoppingCart className="size-6" />
-              {cartCount > 0 && (
-                <span className="absolute -right-2 -top-2 flex size-5 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-[#1a2744]">
-                  {cartCount}
-                </span>
-              )}
+              <BookOpen className="size-6" />
+              <span>MercadoLibro</span>
             </button>
-          </nav>
-        </div>
-      </header>
+
+            <nav className="flex items-center gap-6">
+              {isLoggedIn ? (
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setCurrentView("favorites")}
+                    className="flex items-center justify-center transition-opacity hover:opacity-80"
+                    title="Mis Favoritos"
+                  >
+                    <Heart className="size-6 text-amber-500 fill-amber-500" />
+                  </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 rounded-full bg-amber-500 text-[#1a2744] hover:bg-amber-400 hover:text-[#1a2744] transition-colors"
+                      >
+                        <User className="size-5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem
+                        onClick={() => setCurrentView("library")}
+                        className="cursor-pointer focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <BookOpen className="mr-2 size-4" />
+                        <span>Mi Biblioteca</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => setCurrentView("account")}
+                        className="cursor-pointer focus:bg-accent focus:text-accent-foreground"
+                      >
+                        <Settings className="mr-2 size-4" />
+                        <span>Mi Cuenta</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setIsLoggedIn(false)
+                          setCurrentView("catalog")
+                          setUsername("")
+                          setPassword("")
+                        }}
+                        className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
+                      >
+                        <LogOut className="mr-2 size-4" />
+                        <span>Cerrar sesión</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => setCurrentView("login")}
+                  className="h-8 rounded-full bg-amber-500 px-4 text-xs font-bold text-[#1a2744] hover:bg-amber-400 transition-colors"
+                >
+                  Iniciar Sesión
+                </Button>
+              )}
+              <button
+                onClick={() => setCurrentView("cart")}
+                className="relative transition-opacity hover:opacity-80"
+              >
+                <ShoppingCart className="size-6" />
+                {cartCount > 0 && (
+                  <span className="absolute -right-2 -top-2 flex size-5 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-[#1a2744]">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+            </nav>
+          </div>
+        </header>
       )}
 
-      <main className={`mx-auto max-w-[1600px] px-4 md:px-8 py-8 ${currentView === "login" ? "flex min-h-screen items-center justify-center p-4" : ""}`}>
+      <main className={`w-full flex-1 mx-auto max-w-[1600px] px-4 md:px-8 py-8 ${currentView === "login" ? "flex items-center justify-center p-4" : ""}`}>
         {/* Login View */}
         {currentView === "login" && (
           <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-xl">
@@ -428,11 +425,11 @@ export default function Bookstore() {
               <h1 className="text-2xl font-bold text-[#1a2744]">MercadoLibro</h1>
               <p className="mt-2 text-sm text-muted-foreground">Ingresa tus credenciales para continuar</p>
             </div>
-            
+
             <div className="space-y-5">
               {loginError && (
                 <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-center text-sm font-medium text-red-600">
-                  Usuario o contraseña incorrectos. Podés usar:<br/> <span className="font-bold">usuario@ejemplo.com</span> / <span className="font-bold">123456</span>
+                  Usuario o contraseña incorrectos. Podés usar:<br /> <span className="font-bold">usuario@ejemplo.com</span> / <span className="font-bold">123456</span>
                 </div>
               )}
               <div className="space-y-2">
@@ -471,7 +468,7 @@ export default function Bookstore() {
               >
                 Iniciar Sesión
               </Button>
-              
+
               <div className="mt-6 text-center text-sm text-muted-foreground">
                 ¿No tienes una cuenta?{" "}
                 <button type="button" className="font-semibold text-[#1a2744] hover:underline focus:outline-none">
@@ -484,7 +481,8 @@ export default function Bookstore() {
 
         {/* Catalog View */}
         {currentView === "catalog" && (
-          <div className="flex flex-col gap-8 md:flex-row">
+          <div className="flex flex-col gap-12">
+            <div className="flex flex-col gap-8 md:flex-row">
             {/* Left Sidebar */}
             <aside className="w-full shrink-0 md:w-64 space-y-6">
               {/* Category Filter */}
@@ -518,9 +516,9 @@ export default function Bookstore() {
 
             {/* Main Content */}
             <div className="flex-1">
-              <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mb-8 flex flex-col gap-6">
                 {/* Search Bar */}
-                <div className="relative flex-1 sm:max-w-md">
+                <div className="relative w-full">
                   <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                   <input
                     type="text"
@@ -531,8 +529,37 @@ export default function Bookstore() {
                   />
                 </div>
 
+                {/* Banner Section */}
+                <div className="relative flex flex-col md:flex-row w-full mb-4 rounded-[2rem] bg-card border border-border/50 shadow-[0_0px_35px_rgba(0,0,0,0.08)] overflow-hidden group">
+                  {/* Borde superior llamativo */}
+                  <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-400 via-amber-500 to-[#1a2744] z-20"></div>
+
+                  {/* Imagen a la Izquierda (Ocupa todo el espacio vertical sin blancos) */}
+                  <div className="w-full md:w-1/2 relative min-h-[280px] md:min-h-[360px] order-1">
+                    <img
+                      src="/images/inicio1 copy.jpg"
+                      alt="Banner de inicio"
+                      className="absolute inset-0 w-full h-full object-cover object-center"
+                    />
+                  </div>
+
+                  {/* Texto a la Derecha (con texto alineado a la izquierda) */}
+                  <div className="relative z-10 w-full md:w-1/2 px-6 py-10 md:px-12 md:py-14 text-center md:text-left flex flex-col justify-center bg-card order-2">
+                    {/* Luces ambientales */}
+                    <div className="absolute top-0 right-0 -mt-16 -mr-16 size-80 rounded-full bg-[#1a2744]/5 blur-3xl pointer-events-none transition-transform duration-700 group-hover:scale-125"></div>
+                    <div className="absolute bottom-0 left-0 -mb-16 -ml-16 size-80 rounded-full bg-amber-500/10 blur-3xl pointer-events-none transition-transform duration-700 group-hover:scale-125"></div>
+
+                    <p className="text-muted-foreground text-sm md:text-base leading-relaxed relative z-10">
+                      Descubrí nuevas lecturas, encontrá tus títulos favoritos y recibilos donde quieras, sin complicaciones. Empezá tu próxima lectura hoy mismo.
+                    </p>
+                    <p className="mt-4 text-2xl md:text-3xl font-bold text-[#1a2744] relative z-10">
+                      ¡Adelante!
+                    </p>
+                  </div>
+                </div>
+
                 {/* Sort Dropdown */}
-                <div className="w-full sm:w-56 shrink-0">
+                <div className="w-full sm:w-56 shrink-0 sm:self-end">
                   <Select value={sortBy} onValueChange={setSortBy}>
                     <SelectTrigger className="w-full rounded-lg border-border bg-background shadow-sm">
                       <SelectValue placeholder="Ordenar por..." />
@@ -621,6 +648,9 @@ export default function Bookstore() {
                 </div>
               )}
             </div>
+          </div>
+
+
           </div>
         )}
 
@@ -1073,7 +1103,7 @@ export default function Bookstore() {
                       <input
                         type="text"
                         value={profileData.name}
-                        onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                        onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
                         className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744]"
                       />
                     </div>
@@ -1082,7 +1112,7 @@ export default function Bookstore() {
                       <input
                         type="tel"
                         value={profileData.phone}
-                        onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
+                        onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
                         className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744]"
                       />
                     </div>
@@ -1092,7 +1122,7 @@ export default function Bookstore() {
                     <input
                       type="email"
                       value={profileData.email}
-                      onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                      onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
                       className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744]"
                     />
                   </div>
@@ -1163,7 +1193,7 @@ export default function Bookstore() {
                     <p className="text-sm text-destructive/80">Cuidado, esta acción es irreversible.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between border-t border-destructive/10 pt-4">
                   <div className="space-y-1">
                     <h3 className="font-medium text-card-foreground">Eliminar cuenta</h3>
@@ -1171,10 +1201,10 @@ export default function Bookstore() {
                       Una vez que elimines tu cuenta, no hay vuelta atrás. Se borrará toda tu información, incluyendo los libros en tu biblioteca.
                     </p>
                   </div>
-                  <Button 
-                    variant="destructive" 
+                  <Button
+                    variant="destructive"
                     onClick={() => {
-                      if(window.confirm("¿Estás seguro que querés eliminar tu cuenta? Esta acción no se puede deshacer.")) {
+                      if (window.confirm("¿Estás seguro que querés eliminar tu cuenta? Esta acción no se puede deshacer.")) {
                         setIsLoggedIn(false)
                         setCurrentView("login")
                         setUsername("")
@@ -1191,6 +1221,44 @@ export default function Bookstore() {
           </div>
         )}
       </main>
+
+      {/* Footer (Full Width sin margenes) */}
+      {currentView === "catalog" && (
+        <footer className="w-full bg-[#1a2744] py-12 md:py-16 text-sm text-white/80 mt-auto">
+          <div className="mx-auto max-w-[1600px] px-8 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-12">
+            {/* Quienes somos */}
+            <div className="flex flex-col gap-3">
+              <h3 className="text-xl font-bold text-white">¿Quiénes somos?</h3>
+              <p className="leading-relaxed">
+                Somos MercadoLibro, tu biblioteca virtual del Chaco al mundo. Contamos con una amplia trayectoria recomendando y promoviendo el hábito de la lectura. Nos dedicamos a acercar el conocimiento a cada rincón, garantizando una excelente experiencia y total confianza en cada libro que llega a tus manos.
+              </p>
+            </div>
+
+            {/* Medios de pago */}
+            <div className="flex flex-col gap-3">
+              <h3 className="text-xl font-bold text-white">Medios de pago</h3>
+              <ul className="space-y-2 leading-relaxed">
+                <li className="flex items-center gap-2">• Tarjeta de crédito</li>
+                <li className="flex items-center gap-2">• Débito</li>
+                <li className="flex items-center gap-2">• Transferencia bancaria</li>
+              </ul>
+            </div>
+
+            {/* Contactanos */}
+            <div className="flex flex-col gap-3">
+              <h3 className="text-xl font-bold text-white">Contáctanos</h3>
+              <p className="leading-relaxed">
+                Estamos para ayudarte ante cualquier consulta.
+              </p>
+              <ul className="space-y-2 mt-2">
+                <li><strong className="font-semibold text-white">Email:</strong> ayuda@mercadolibro.com.ar</li>
+                <li><strong className="font-semibold text-white">Teléfono:</strong> +54 362 412-3456</li>
+                <li><strong className="font-semibold text-white">Dirección:</strong> French 414, Resistencia, Chaco, Argentina</li>
+              </ul>
+            </div>
+          </div>
+        </footer>
+      )}
 
       {/* Reader Modal */}
       <Dialog open={!!readerBook} onOpenChange={() => setReaderBook(null)}>
@@ -1228,7 +1296,7 @@ export default function Bookstore() {
           <div className="flex flex-col items-center justify-center space-y-4 py-4 text-center">
             <AlertTriangle className="size-12 text-amber-500" />
             <p className="text-muted-foreground">
-              {loginPromptAction === "favorite" 
+              {loginPromptAction === "favorite"
                 ? "Para agregar libros a tus favoritos necesitas iniciar sesión en tu cuenta."
                 : "Para añadir libros al carrito necesitas iniciar sesión en tu cuenta."}
             </p>
