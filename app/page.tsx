@@ -188,10 +188,60 @@ const mockBooks: Book[] = [
       "Se espera que los estudiantes sean capaces de: Modelar los procesos de desarrollo de software, ya sea a través de la UML o enfoques jerárquicos, analizar y diseñar sistemas informáticos, aprender sobre el ciclo de vida del software, desde la planificación hasta la implementación y el mantenimiento, aprender, aplicar la cultura profesional en el desarrollo de software, aplicar soluciones informáticas para resolver problemas. Los contenidos de desarrollo de software e Implementación de Tecnología es una asignatura esencial para la formación de profesionales en el ámbito de la informática. Proporciona a los estudiantes las competencias necesarias para el desarrollo de software y la implementación de tecnología, lo que les permitirá desempeñarse exitosamente en el campo laboral."
     ],
     coverColor: "bg-indigo-600",
+  },
+  {
+    id: 10,
+    title: "El mundo de Sofía",
+    author: "Jostein Gaarder",
+    category: "Filosofía",
+    price: 18500,
+    description: "Una novela sobre la historia de la filosofía que invita a reflexionar sobre las grandes preguntas del pensamiento humano a través de un entretenido relato de ficción.",
+    preview: ["Un día, al volver del instituto, Sofía Amundsen encuentra una carta en el buzón con una única pregunta: ¿Quién eres? Así comienza un apasionante viaje a lo largo y ancho de la historia de la filosofía."],
+    coverColor: "bg-teal-600",
+  },
+  {
+    id: 11,
+    title: "Pensar rápido, pensar despacio",
+    author: "Daniel Kahneman",
+    category: "Psicología",
+    price: 21000,
+    description: "Un revolucionario recorrido por la mente humana que explica los dos sistemas que modelan cómo pensamos: el sistema 1, rápido, intuitivo y emocional, y el sistema 2, más lento, deliberativo y lógico.",
+    preview: ["La premisa básica de este libro es que es más fácil reconocer los errores de los demás que los nuestros. Nuestros sesgos cognitivos moldean gran parte de nuestras decisiones cotidianas sin que nos demos cuenta."],
+    coverColor: "bg-orange-600",
+  },
+  {
+    id: 12,
+    title: "Cien años de soledad",
+    author: "Gabriel García Márquez",
+    category: "Literatura Clásica",
+    price: 19500,
+    description: "La obra maestra del realismo mágico latinoamericano. Narra la historia de la familia Buendía a lo largo de siete generaciones en el pueblo mítico de Macondo.",
+    preview: ["Muchos años después, frente al pelotón de fusilamiento, el coronel Aureliano Buendía había de recordar aquella tarde remota en que su padre lo llevó a conocer el hielo."],
+    coverColor: "bg-emerald-700",
+  },
+  {
+    id: 13,
+    title: "Sapiens: De animales a dioses",
+    author: "Yuval Noah Harari",
+    category: "Historia",
+    price: 23400,
+    description: "Un fascinante recorrido por la breve historia de la humanidad. Desde los primeros humanos que caminaron sobre la Tierra hasta los radicales y a veces devastadores avances de las revoluciones cognitiva, agrícola y científica.",
+    preview: ["Hace cien mil años, al menos seis especies de homínidos habitaban la Tierra. Hoy en día, solo queda una: el Homo sapiens. ¿Cómo logró nuestra especie imponerse en la lucha por la supervivencia y convertirse en el ser dominante del planeta?"],
+    coverColor: "bg-slate-700",
+  },
+  {
+    id: 14,
+    title: "Fahrenheit 451",
+    author: "Ray Bradbury",
+    category: "Ciencia Ficción",
+    price: 17200,
+    description: "Un clásico de la literatura distópica. En una sociedad futura donde los libros están prohibidos, el bombero Guy Montag empieza a cuestionarse su labor de destruirlos.",
+    preview: ["Constituía un placer especial ver las cosas consumidas, ver los objetos ennegrecidos y cambiados. Con la punta de bronce del soplete en sus puños, con aquella gigantesca serpiente pitón escupiendo su queroseno venenoso sobre el mundo, la sangre le latía en la cabeza y sus manos eran las de un fantástico director tocando todas las sinfonías del fuego y de las llamas para destruir los guiñapos y ruinas de la Historia."],
+    coverColor: "bg-red-900",
   }
 ]
 
-const categories = ["Informática", "Derecho", "Administración", "Economía"]
+const categories = ["Informática", "Derecho", "Administración", "Economía", "Filosofía", "Psicología", "Literatura Clásica", "Historia", "Ciencia Ficción"]
 
 type View = "login" | "catalog" | "detail" | "cart" | "library" | "account" | "favorites"
 
@@ -217,6 +267,7 @@ export default function Bookstore() {
     phone: "+54 11 1234-5678"
   })
   const [sortBy, setSortBy] = useState<string>("popular")
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState<boolean>(false)
 
   // Filter books based on category (searchQuery no afecta al catálogo visual)
   const filteredBooks = mockBooks.filter((book) => {
@@ -487,211 +538,222 @@ export default function Bookstore() {
         {currentView === "catalog" && (
           <div className="flex flex-col gap-12">
             <div className="flex flex-col gap-8 md:flex-row">
-            {/* Left Sidebar */}
-            <aside className="w-full shrink-0 md:w-64 space-y-6">
-              {/* Category Filter */}
-              <div>
-                <h2 className="mb-4 text-lg font-semibold text-[#1a2744]">Categorías</h2>
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={() => setSelectedCategory(null)}
-                    className={`text-left rounded-lg px-4 py-2 text-sm font-medium transition-colors ${!selectedCategory
-                      ? "bg-[#1a2744] text-white"
-                      : "text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
-                      }`}
+              {/* Left Sidebar */}
+              <aside className="w-full shrink-0 md:w-64 space-y-6">
+                {/* Category Filter */}
+                <div>
+                  <button 
+                    onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+                    className="flex w-full items-center justify-between mb-4 hover:opacity-80 transition-opacity focus:outline-none"
                   >
-                    Todos
+                    <h2 className="text-lg font-semibold text-[#1a2744]">Categorías</h2>
+                    <span className="text-[#1a2744] bg-secondary/50 rounded-full p-1 border border-border">
+                      {isCategoriesOpen ? <Minus className="size-4" /> : <Plus className="size-4" />}
+                    </span>
                   </button>
-                  {categories.map((category) => (
-                    <button
-                      key={category}
-                      onClick={() => setSelectedCategory(category)}
-                      className={`text-left rounded-lg px-4 py-2 text-sm font-medium transition-colors ${selectedCategory === category
-                        ? "bg-[#1a2744] text-white"
-                        : "text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
-                        }`}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </aside>
-
-            {/* Main Content */}
-            <div className="flex-1">
-              <div className="mb-8 flex flex-col gap-6">
-                {/* Search Bar */}
-                <div className="relative w-full z-30">
-                  <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Buscar por título, autor o categoría..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full rounded-lg border border-border bg-background py-2.5 pl-12 pr-4 text-foreground shadow-sm transition-colors focus:border-[#1a2744] focus:outline-none focus:ring-2 focus:ring-[#1a2744]/20"
-                  />
-
-                  {/* Dropdown de Resultados */}
-                  {searchQuery.trim() !== "" && (
-                    <div className="absolute top-full left-0 right-0 mt-2 rounded-lg border border-border bg-card shadow-xl max-h-96 overflow-y-auto overflow-x-hidden">
-                      {searchResults.length > 0 ? (
-                        <div className="p-2 space-y-1">
-                          {searchResults.map((book) => (
-                            <div 
-                              key={book.id} 
-                              onClick={() => {
-                                setSelectedBook(book)
-                                setCurrentView("detail")
-                                setSearchQuery("")
-                              }}
-                              className="group/result flex gap-4 p-3 cursor-pointer hover:bg-secondary/60 rounded-md transition-colors items-center border border-transparent hover:border-border/50"
-                            >
-                              <div className={`${book.coverColor} size-12 sm:size-14 shrink-0 rounded flex items-center justify-center shadow-sm`}>
-                                <BookOpen className="size-6 sm:size-7 text-white/80 transition-transform group-hover/result:scale-110" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <h4 className="font-semibold text-sm sm:text-base text-card-foreground group-hover/result:text-[#1a2744] truncate transition-colors">{book.title}</h4>
-                                <p className="text-xs sm:text-sm text-muted-foreground truncate">{book.author} <span className="opacity-50 mx-1">•</span> {book.category}</p>
-                              </div>
-                              <div className="font-bold text-sm sm:text-base text-[#1a2744] shrink-0 pl-2">
-                                {formatPrice(book.price)}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="p-8 text-center flex flex-col items-center justify-center">
-                          <Search className="size-8 text-muted-foreground/50 mb-3" />
-                          <p className="text-sm font-medium text-muted-foreground">
-                            No se encontraron resultados para "{searchQuery}"
-                          </p>
-                        </div>
-                      )}
+                  
+                  {isCategoriesOpen && (
+                    <div className="flex flex-col gap-2 pl-4 border-l-2 border-[#1a2744]/10 ml-1">
+                      <button
+                        onClick={() => setSelectedCategory(null)}
+                        className={`text-left rounded-lg px-4 py-2 text-sm font-medium transition-colors ${!selectedCategory
+                          ? "bg-[#1a2744] text-white"
+                          : "text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
+                          }`}
+                      >
+                        Todos
+                      </button>
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => setSelectedCategory(category)}
+                          className={`text-left rounded-lg px-4 py-2 text-sm font-medium transition-colors ${selectedCategory === category
+                            ? "bg-[#1a2744] text-white"
+                            : "text-muted-foreground hover:bg-secondary/80 hover:text-foreground"
+                            }`}
+                        >
+                          {category}
+                        </button>
+                      ))}
                     </div>
                   )}
                 </div>
+              </aside>
 
-                {/* Banner Section */}
-                <div className="relative flex flex-col md:flex-row w-full mb-4 rounded-[2rem] bg-card border border-border/50 shadow-[0_0px_35px_rgba(0,0,0,0.08)] overflow-hidden group">
-                  {/* Borde superior llamativo */}
-                  <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-400 via-amber-500 to-[#1a2744] z-20"></div>
-
-                  {/* Imagen a la Izquierda (Ocupa todo el espacio vertical sin blancos) */}
-                  <div className="w-full md:w-1/2 relative min-h-[280px] md:min-h-[360px] order-1">
-                    <img
-                      src="/images/inicio1 copy.jpg"
-                      alt="Banner de inicio"
-                      className="absolute inset-0 w-full h-full object-cover object-center"
+              {/* Main Content */}
+              <div className="flex-1">
+                <div className="mb-8 flex flex-col gap-6">
+                  {/* Search Bar */}
+                  <div className="relative w-full z-30">
+                    <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+                    <input
+                      type="text"
+                      placeholder="Buscar por título, autor o categoría..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full rounded-lg border border-border bg-background py-2.5 pl-12 pr-4 text-foreground shadow-sm transition-colors focus:border-[#1a2744] focus:outline-none focus:ring-2 focus:ring-[#1a2744]/20"
                     />
-                  </div>
 
-                  {/* Texto a la Derecha (con texto alineado a la izquierda) */}
-                  <div className="relative z-10 w-full md:w-1/2 px-6 py-10 md:px-12 md:py-14 text-center md:text-left flex flex-col justify-center bg-card order-2">
-                    {/* Luces ambientales */}
-                    <div className="absolute top-0 right-0 -mt-16 -mr-16 size-80 rounded-full bg-[#1a2744]/5 blur-3xl pointer-events-none transition-transform duration-700 group-hover:scale-125"></div>
-                    <div className="absolute bottom-0 left-0 -mb-16 -ml-16 size-80 rounded-full bg-amber-500/10 blur-3xl pointer-events-none transition-transform duration-700 group-hover:scale-125"></div>
-
-                    <p className="text-muted-foreground text-sm md:text-base leading-relaxed relative z-10">
-                      Descubrí nuevas lecturas, encontrá tus títulos favoritos y recibilos donde quieras, sin complicaciones. Empezá tu próxima lectura hoy mismo.
-                    </p>
-                    <p className="mt-4 text-2xl md:text-3xl font-bold text-[#1a2744] relative z-10">
-                      ¡Adelante!
-                    </p>
-                  </div>
-                </div>
-
-                {/* Sort Dropdown */}
-                <div className="w-full sm:w-56 shrink-0 sm:self-end">
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-full rounded-lg border-border bg-background shadow-sm">
-                      <SelectValue placeholder="Ordenar por..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="popular">Más populares</SelectItem>
-                      <SelectItem value="price-asc">Precio: Menor a mayor</SelectItem>
-                      <SelectItem value="price-desc">Precio: Mayor a menor</SelectItem>
-                      <SelectItem value="alpha-asc">Alfabéticamente (A-Z)</SelectItem>
-                      <SelectItem value="alpha-desc">Alfabéticamente (Z-A)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Books Grid */}
-              <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                {sortedBooks.map((book) => (
-                  <div
-                    key={book.id}
-                    onClick={() => {
-                      setSelectedBook(book)
-                      setCurrentView("detail")
-                    }}
-                    className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all hover:shadow-md cursor-pointer hover:border-[#1a2744]/30"
-                  >
-                    {/* Book Cover */}
-                    <div
-                      className={`${book.coverColor} flex h-48 shrink-0 items-center justify-center`}
-                    >
-                      <BookOpen className="size-16 text-white/80 transition-transform duration-300 group-hover:scale-110" />
-                    </div>
-                    {/* Book Info */}
-                    <div className="flex flex-1 flex-col p-4">
-                      <div className="flex">
-                        <Badge variant="secondary" className="mb-2">
-                          {book.category}
-                        </Badge>
+                    {/* Dropdown de Resultados */}
+                    {searchQuery.trim() !== "" && (
+                      <div className="absolute top-full left-0 right-0 mt-2 rounded-lg border border-border bg-card shadow-xl max-h-96 overflow-y-auto overflow-x-hidden">
+                        {searchResults.length > 0 ? (
+                          <div className="p-2 space-y-1">
+                            {searchResults.map((book) => (
+                              <div
+                                key={book.id}
+                                onClick={() => {
+                                  setSelectedBook(book)
+                                  setCurrentView("detail")
+                                  setSearchQuery("")
+                                }}
+                                className="group/result flex gap-4 p-3 cursor-pointer hover:bg-secondary/60 rounded-md transition-colors items-center border border-transparent hover:border-border/50"
+                              >
+                                <div className={`${book.coverColor} size-12 sm:size-14 shrink-0 rounded flex items-center justify-center shadow-sm`}>
+                                  <BookOpen className="size-6 sm:size-7 text-white/80 transition-transform group-hover/result:scale-110" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <h4 className="font-semibold text-sm sm:text-base text-card-foreground group-hover/result:text-[#1a2744] truncate transition-colors">{book.title}</h4>
+                                  <p className="text-xs sm:text-sm text-muted-foreground truncate">{book.author} <span className="opacity-50 mx-1">•</span> {book.category}</p>
+                                </div>
+                                <div className="font-bold text-sm sm:text-base text-[#1a2744] shrink-0 pl-2">
+                                  {formatPrice(book.price)}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="p-8 text-center flex flex-col items-center justify-center">
+                            <Search className="size-8 text-muted-foreground/50 mb-3" />
+                            <p className="text-sm font-medium text-muted-foreground">
+                              No se encontraron resultados para "{searchQuery}"
+                            </p>
+                          </div>
+                        )}
                       </div>
-                      <h3 className="mb-1 line-clamp-2 font-semibold text-card-foreground group-hover:text-[#1a2744] transition-colors">
-                        {book.title}
-                      </h3>
-                      <p className="mb-3 text-sm text-muted-foreground">
-                        {book.author}
+                    )}
+                  </div>
+
+                  {/* Banner Section */}
+                  <div className="relative flex flex-col md:flex-row w-full mb-4 rounded-[2rem] bg-card border border-border/50 shadow-[0_0px_35px_rgba(0,0,0,0.08)] overflow-hidden group">
+                    {/* Borde superior llamativo */}
+                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-400 via-amber-500 to-[#1a2744] z-20"></div>
+
+                    {/* Imagen a la Izquierda (Ocupa todo el espacio vertical sin blancos) */}
+                    <div className="w-full md:w-1/2 relative min-h-[280px] md:min-h-[360px] order-1">
+                      <img
+                        src="/images/inicio1 copy.jpg"
+                        alt="Banner de inicio"
+                        className="absolute inset-0 w-full h-full object-cover object-center"
+                      />
+                    </div>
+
+                    {/* Texto a la Derecha (con texto alineado a la izquierda) */}
+                    <div className="relative z-10 w-full md:w-1/2 px-6 py-10 md:px-12 md:py-14 text-center md:text-left flex flex-col justify-center bg-card order-2">
+                      {/* Luces ambientales */}
+                      <div className="absolute top-0 right-0 -mt-16 -mr-16 size-80 rounded-full bg-[#1a2744]/5 blur-3xl pointer-events-none transition-transform duration-700 group-hover:scale-125"></div>
+                      <div className="absolute bottom-0 left-0 -mb-16 -ml-16 size-80 rounded-full bg-amber-500/10 blur-3xl pointer-events-none transition-transform duration-700 group-hover:scale-125"></div>
+
+                      <p className="text-muted-foreground text-sm md:text-base leading-relaxed relative z-10">
+                        Descubrí nuevas lecturas, encontrá tus títulos favoritos y recibilos donde quieras, sin complicaciones. Empezá tu próxima lectura hoy mismo.
                       </p>
-                      <div className="mt-auto flex items-center justify-between">
-                        <span className="text-lg font-bold text-[#1a2744]">
-                          {formatPrice(book.price)}
-                        </span>
-                        <div className="flex gap-2">
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              toggleFavorite(book)
-                            }}
-                            variant="ghost"
-                            size="icon"
-                            className="text-amber-500 hover:text-amber-600 hover:bg-amber-50"
-                            title={favorites.some(fav => fav.id === book.id) ? "Quitar de favoritos" : "Añadir a favoritos"}
-                          >
-                            <Heart className={`size-5 ${favorites.some(fav => fav.id === book.id) ? "fill-amber-500" : ""}`} />
-                          </Button>
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              addToCart(book)
-                            }}
-                            className={`${cart.some(item => item.id === book.id) ? "bg-amber-600" : "bg-amber-500"} text-[#1a2744] hover:bg-amber-600 shrink-0`}
-                            size="icon"
-                            title={cart.some(item => item.id === book.id) ? "Quitar del carrito" : "Añadir al carrito"}
-                          >
-                            <ShoppingCart className={`size-5 ${cart.some(item => item.id === book.id) ? "fill-[#1a2744]" : ""}`} />
-                          </Button>
+                      <p className="mt-4 text-2xl md:text-3xl font-bold text-[#1a2744] relative z-10">
+                        ¡Adelante!
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Sort Dropdown */}
+                  <div className="w-full sm:w-56 shrink-0 sm:self-end">
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                      <SelectTrigger className="w-full rounded-lg border-border bg-background shadow-sm">
+                        <SelectValue placeholder="Ordenar por..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="popular">Más populares</SelectItem>
+                        <SelectItem value="price-asc">Precio: Menor a mayor</SelectItem>
+                        <SelectItem value="price-desc">Precio: Mayor a menor</SelectItem>
+                        <SelectItem value="alpha-asc">Alfabéticamente (A-Z)</SelectItem>
+                        <SelectItem value="alpha-desc">Alfabéticamente (Z-A)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Books Grid */}
+                <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                  {sortedBooks.map((book) => (
+                    <div
+                      key={book.id}
+                      onClick={() => {
+                        setSelectedBook(book)
+                        setCurrentView("detail")
+                      }}
+                      className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all hover:shadow-md cursor-pointer hover:border-[#1a2744]/30"
+                    >
+                      {/* Book Cover */}
+                      <div
+                        className={`${book.coverColor} flex h-48 shrink-0 items-center justify-center`}
+                      >
+                        <BookOpen className="size-16 text-white/80 transition-transform duration-300 group-hover:scale-110" />
+                      </div>
+                      {/* Book Info */}
+                      <div className="flex flex-1 flex-col p-4">
+                        <div className="flex">
+                          <Badge variant="secondary" className="mb-2">
+                            {book.category}
+                          </Badge>
+                        </div>
+                        <h3 className="mb-1 line-clamp-2 font-semibold text-card-foreground group-hover:text-[#1a2744] transition-colors">
+                          {book.title}
+                        </h3>
+                        <p className="mb-3 text-sm text-muted-foreground">
+                          {book.author}
+                        </p>
+                        <div className="mt-auto flex items-center justify-between">
+                          <span className="text-lg font-bold text-[#1a2744]">
+                            {formatPrice(book.price)}
+                          </span>
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                toggleFavorite(book)
+                              }}
+                              variant="ghost"
+                              size="icon"
+                              className="text-amber-500 hover:text-amber-600 hover:bg-amber-50"
+                              title={favorites.some(fav => fav.id === book.id) ? "Quitar de favoritos" : "Añadir a favoritos"}
+                            >
+                              <Heart className={`size-5 ${favorites.some(fav => fav.id === book.id) ? "fill-amber-500" : ""}`} />
+                            </Button>
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                addToCart(book)
+                              }}
+                              className={`${cart.some(item => item.id === book.id) ? "bg-amber-600" : "bg-amber-500"} text-[#1a2744] hover:bg-amber-600 shrink-0`}
+                              size="icon"
+                              title={cart.some(item => item.id === book.id) ? "Quitar del carrito" : "Añadir al carrito"}
+                            >
+                              <ShoppingCart className={`size-5 ${cart.some(item => item.id === book.id) ? "fill-[#1a2744]" : ""}`} />
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-
-              {sortedBooks.length === 0 && (
-                <div className="py-12 text-center">
-                  <p className="text-muted-foreground">
-                    No se encontraron libros que coincidan con tu búsqueda.
-                  </p>
+                  ))}
                 </div>
-              )}
+
+                {sortedBooks.length === 0 && (
+                  <div className="py-12 text-center">
+                    <p className="text-muted-foreground">
+                      No se encontraron libros que coincidan con tu búsqueda.
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
 
 
           </div>
