@@ -218,16 +218,20 @@ export default function Bookstore() {
   })
   const [sortBy, setSortBy] = useState<string>("popular")
 
-  // Filter books based on search and category
+  // Filter books based on category (searchQuery no afecta al catálogo visual)
   const filteredBooks = mockBooks.filter((book) => {
-    const matchesSearch =
-      searchQuery === "" ||
+    const matchesCategory =
+      !selectedCategory || book.category === selectedCategory
+    return matchesCategory
+  })
+
+  // Search results para el dropdown
+  const searchResults = searchQuery.trim() === "" ? [] : mockBooks.filter((book) => {
+    return (
       book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
       book.category.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory =
-      !selectedCategory || book.category === selectedCategory
-    return matchesSearch && matchesCategory
+    )
   })
 
   // Sort books
@@ -518,7 +522,7 @@ export default function Bookstore() {
             <div className="flex-1">
               <div className="mb-8 flex flex-col gap-6">
                 {/* Search Bar */}
-                <div className="relative w-full">
+                <div className="relative w-full z-30">
                   <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                   <input
                     type="text"
@@ -527,6 +531,45 @@ export default function Bookstore() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full rounded-lg border border-border bg-background py-2.5 pl-12 pr-4 text-foreground shadow-sm transition-colors focus:border-[#1a2744] focus:outline-none focus:ring-2 focus:ring-[#1a2744]/20"
                   />
+
+                  {/* Dropdown de Resultados */}
+                  {searchQuery.trim() !== "" && (
+                    <div className="absolute top-full left-0 right-0 mt-2 rounded-lg border border-border bg-card shadow-xl max-h-96 overflow-y-auto overflow-x-hidden">
+                      {searchResults.length > 0 ? (
+                        <div className="p-2 space-y-1">
+                          {searchResults.map((book) => (
+                            <div 
+                              key={book.id} 
+                              onClick={() => {
+                                setSelectedBook(book)
+                                setCurrentView("detail")
+                                setSearchQuery("")
+                              }}
+                              className="group/result flex gap-4 p-3 cursor-pointer hover:bg-secondary/60 rounded-md transition-colors items-center border border-transparent hover:border-border/50"
+                            >
+                              <div className={`${book.coverColor} size-12 sm:size-14 shrink-0 rounded flex items-center justify-center shadow-sm`}>
+                                <BookOpen className="size-6 sm:size-7 text-white/80 transition-transform group-hover/result:scale-110" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-sm sm:text-base text-card-foreground group-hover/result:text-[#1a2744] truncate transition-colors">{book.title}</h4>
+                                <p className="text-xs sm:text-sm text-muted-foreground truncate">{book.author} <span className="opacity-50 mx-1">•</span> {book.category}</p>
+                              </div>
+                              <div className="font-bold text-sm sm:text-base text-[#1a2744] shrink-0 pl-2">
+                                {formatPrice(book.price)}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="p-8 text-center flex flex-col items-center justify-center">
+                          <Search className="size-8 text-muted-foreground/50 mb-3" />
+                          <p className="text-sm font-medium text-muted-foreground">
+                            No se encontraron resultados para "{searchQuery}"
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Banner Section */}
