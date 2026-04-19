@@ -354,8 +354,22 @@ export default function Bookstore() {
     }
   }
 
-  const handleDownload = () => {
+  const handleDownload = (bookTitle: string) => {
     showToast("Descarga iniciada")
+    
+    setTimeout(() => {
+      // PDF base64 de una página en blanco
+      const pdfBase64 = "JVBERi0xLjAKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3ggWzAgMCA1OTUgODQyXQo+PgplbmRvYmoKeHJlZgowIDQKMDAwMDAwMDAwMCA2NTUzNSBmCjAwMDAwMDAwMDkgMDAwMDAgbgowMDAwMDAwMDUyIDAwMDAwIG4KMDAwMDAwMDEwNCAwMDAwMCBuCnRyYWlsZXIKPDwKL1NpemUgNAovUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKMTczCiUlRU9G"
+      
+      const link = document.createElement("a");
+      link.href = `data:application/pdf;base64,${pdfBase64}`;
+      link.download = `${bookTitle.replace(/[\s\W]+/g, '_')}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast("Descarga finalizada")
+    }, 1500)
   }
 
   // Format price in ARS
@@ -1156,7 +1170,7 @@ export default function Bookstore() {
                           Leer
                         </Button>
                         <Button
-                          onClick={handleDownload}
+                          onClick={() => handleDownload(book.title)}
                           variant="outline"
                           size="sm"
                           className="flex-1"
