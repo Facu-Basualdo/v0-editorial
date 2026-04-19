@@ -356,11 +356,11 @@ export default function Bookstore() {
 
   const handleDownload = (bookTitle: string) => {
     showToast("Descarga iniciada")
-    
+
     setTimeout(() => {
       // PDF base64 de una página en blanco
       const pdfBase64 = "JVBERi0xLjAKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3ggWzAgMCA1OTUgODQyXQo+PgplbmRvYmoKeHJlZgowIDQKMDAwMDAwMDAwMCA2NTUzNSBmCjAwMDAwMDAwMDkgMDAwMDAgbgowMDAwMDAwMDUyIDAwMDAwIG4KMDAwMDAwMDEwNCAwMDAwMCBuCnRyYWlsZXIKPDwKL1NpemUgNAovUm9vdCAxIDAgUgo+PgpzdGFydHhyZWYKMTczCiUlRU9G"
-      
+
       const link = document.createElement("a");
       link.href = `data:application/pdf;base64,${pdfBase64}`;
       link.download = `${bookTitle.replace(/[\s\W]+/g, '_')}.pdf`;
@@ -556,7 +556,7 @@ export default function Bookstore() {
               <aside className="w-full shrink-0 md:w-64 space-y-6">
                 {/* Category Filter */}
                 <div>
-                  <button 
+                  <button
                     onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
                     className="flex w-full items-center justify-between mb-4 hover:opacity-80 transition-opacity focus:outline-none"
                   >
@@ -565,7 +565,7 @@ export default function Bookstore() {
                       {isCategoriesOpen ? <Minus className="size-4" /> : <Plus className="size-4" />}
                     </span>
                   </button>
-                  
+
                   {isCategoriesOpen && (
                     <div className="flex flex-col gap-2 pl-4 border-l-2 border-[#1a2744]/10 ml-1">
                       <button
@@ -656,7 +656,7 @@ export default function Bookstore() {
                     {/* Imagen a la Izquierda (Ocupa todo el espacio vertical sin blancos) */}
                     <div className="w-full md:w-1/2 relative min-h-[280px] md:min-h-[360px] order-1">
                       <img
-                        src="/images/inicio1 copy.jpg"
+                        src="/images/inicio2.png"
                         alt="Banner de inicio"
                         className="absolute inset-0 w-full h-full object-cover object-center"
                       />
@@ -669,7 +669,7 @@ export default function Bookstore() {
                       <div className="absolute bottom-0 left-0 -mb-16 -ml-16 size-80 rounded-full bg-amber-500/10 blur-3xl pointer-events-none transition-transform duration-700 group-hover:scale-125"></div>
 
                       <p className="text-muted-foreground text-sm md:text-base leading-relaxed relative z-10">
-                        Descubrí nuevas lecturas, encontrá tus títulos favoritos y recibilos donde quieras, sin complicaciones. Empezá tu próxima lectura hoy mismo.
+                        Descubrí nuevas lecturas, encontrá tus títulos favoritos, descargalos donde quieras y llevá tu biblioteca donde vayas. Compra segura, descarga inmediata. Empezá tu próxima lectura hoy mismo.
                       </p>
                       <p className="mt-4 text-2xl md:text-3xl font-bold text-[#1a2744] relative z-10">
                         ¡Adelante!
@@ -1349,7 +1349,7 @@ export default function Bookstore() {
             <div className="flex flex-col gap-3">
               <h3 className="text-xl font-bold text-white">¿Quiénes somos?</h3>
               <p className="leading-relaxed">
-                Somos MercadoLibro, tu biblioteca virtual del Chaco al mundo. Contamos con una amplia trayectoria recomendando y promoviendo el hábito de la lectura. Nos dedicamos a acercar el conocimiento a cada rincón, garantizando una excelente experiencia y total confianza en cada libro que llega a tus manos.
+                Somos MercadoLibro, tu biblioteca virtual del Chaco al mundo. Nos dedicamos a acercar el conocimiento a cada rincón. Contamos con una amplia trayectoria recomendando y promoviendo el hábito de la lectura.
               </p>
             </div>
 
