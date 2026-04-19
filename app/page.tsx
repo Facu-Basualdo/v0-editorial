@@ -1372,7 +1372,6 @@ export default function Bookstore() {
               <ul className="space-y-2 mt-2">
                 <li><strong className="font-semibold text-white">Email:</strong> ayuda@mercadolibro.com.ar</li>
                 <li><strong className="font-semibold text-white">Teléfono:</strong> +54 362 412-3456</li>
-                <li><strong className="font-semibold text-white">Dirección:</strong> French 414, Resistencia, Chaco, Argentina</li>
               </ul>
             </div>
           </div>
