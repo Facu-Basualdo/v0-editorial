@@ -418,6 +418,15 @@ export default function Bookstore() {
                   >
                     <Heart className="size-6 text-amber-500 fill-amber-500" />
                   </button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => setCurrentView("library")}
+                    className="text-white hover:text-amber-500 hover:bg-transparent px-2"
+                    title="Mi biblioteca"
+                  >
+                    <BookOpen className="mr-2 size-5" />
+                    <span className="hidden sm:inline">Mi biblioteca</span>
+                  </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
@@ -429,13 +438,6 @@ export default function Bookstore() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem
-                        onClick={() => setCurrentView("library")}
-                        className="cursor-pointer focus:bg-accent focus:text-accent-foreground"
-                      >
-                        <BookOpen className="mr-2 size-4" />
-                        <span>Mi Biblioteca</span>
-                      </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => setCurrentView("account")}
                         className="cursor-pointer focus:bg-accent focus:text-accent-foreground"
