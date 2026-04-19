@@ -408,16 +408,9 @@ export default function Bookstore() {
               <span>MercadoLibro</span>
             </button>
 
-            <nav className="flex items-center gap-6">
-              {isLoggedIn ? (
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => setCurrentView("favorites")}
-                    className="flex items-center justify-center transition-opacity hover:opacity-80"
-                    title="Mis Favoritos"
-                  >
-                    <Heart className="size-6 text-amber-500 fill-amber-500" />
-                  </button>
+            <nav className="flex items-center gap-4 md:gap-6">
+              {isLoggedIn && (
+                <>
                   <Button
                     variant="ghost"
                     onClick={() => setCurrentView("library")}
@@ -427,48 +420,16 @@ export default function Bookstore() {
                     <BookOpen className="mr-2 size-5" />
                     <span className="hidden sm:inline">Mi biblioteca</span>
                   </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-9 w-9 rounded-full bg-amber-500 text-[#1a2744] hover:bg-amber-400 hover:text-[#1a2744] transition-colors"
-                      >
-                        <User className="size-5" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem
-                        onClick={() => setCurrentView("account")}
-                        className="cursor-pointer focus:bg-accent focus:text-accent-foreground"
-                      >
-                        <Settings className="mr-2 size-4" />
-                        <span>Mi Cuenta</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setIsLoggedIn(false)
-                          setCurrentView("catalog")
-                          setUsername("")
-                          setPassword("")
-                        }}
-                        className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
-                      >
-                        <LogOut className="mr-2 size-4" />
-                        <span>Cerrar sesión</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              ) : (
-                <Button
-                  onClick={() => setCurrentView("login")}
-                  className="h-8 rounded-full bg-amber-500 px-4 text-xs font-bold text-[#1a2744] hover:bg-amber-400 transition-colors"
-                >
-                  Iniciar Sesión
-                </Button>
+                  <button
+                    onClick={() => setCurrentView("favorites")}
+                    className="flex items-center justify-center transition-opacity hover:opacity-80"
+                    title="Mis Favoritos"
+                  >
+                    <Heart className="size-6 text-amber-500 fill-amber-500" />
+                  </button>
+                </>
               )}
+              
               <button
                 onClick={() => setCurrentView("cart")}
                 className="relative transition-opacity hover:opacity-80"
@@ -480,6 +441,49 @@ export default function Bookstore() {
                   </span>
                 )}
               </button>
+
+              {isLoggedIn ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 rounded-full bg-amber-500 text-[#1a2744] hover:bg-amber-400 hover:text-[#1a2744] transition-colors"
+                    >
+                      <User className="size-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem
+                      onClick={() => setCurrentView("account")}
+                      className="cursor-pointer focus:bg-accent focus:text-accent-foreground"
+                    >
+                      <Settings className="mr-2 size-4" />
+                      <span>Mi Cuenta</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setIsLoggedIn(false)
+                        setCurrentView("catalog")
+                        setUsername("")
+                        setPassword("")
+                      }}
+                      className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
+                    >
+                      <LogOut className="mr-2 size-4" />
+                      <span>Cerrar sesión</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button
+                  onClick={() => setCurrentView("login")}
+                  className="h-8 rounded-full bg-amber-500 px-4 text-xs font-bold text-[#1a2744] hover:bg-amber-400 transition-colors"
+                >
+                  Iniciar Sesión
+                </Button>
+              )}
             </nav>
           </div>
         </header>
