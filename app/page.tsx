@@ -268,6 +268,10 @@ export default function Bookstore() {
   })
   const [sortBy, setSortBy] = useState<string>("popular")
   const [isCategoriesOpen, setIsCategoriesOpen] = useState<boolean>(false)
+  const [isRegistering, setIsRegistering] = useState<boolean>(false)
+  const [registeredUsers, setRegisteredUsers] = useState<{email: string, password: string}[]>([
+    { email: "usuario@ejemplo.com", password: "123456" }
+  ])
 
   // Filter books based on category (searchQuery no afecta al catálogo visual)
   const filteredBooks = mockBooks.filter((book) => {
@@ -382,12 +386,29 @@ export default function Bookstore() {
   }
 
   const handleLogin = () => {
-    if (username.trim() === "usuario@ejemplo.com" && password === "123456") {
+    const userExists = registeredUsers.some(user => user.email === username.trim() && user.password === password)
+    if (userExists) {
       setLoginError(false)
       setIsLoggedIn(true)
       setCurrentView("catalog")
     } else {
       setLoginError(true)
+    }
+  }
+
+  const handleRegister = () => {
+    if (username.trim() !== "" && password !== "") {
+      const userExists = registeredUsers.some(user => user.email === username.trim())
+      if (userExists) {
+        showToast("El usuario ya existe. Por favor, iniciá sesión.")
+      } else {
+        setRegisteredUsers([...registeredUsers, { email: username.trim(), password }])
+        showToast("Cuenta creada exitosamente. Por favor, iniciá sesión.")
+        setIsRegistering(false)
+        setPassword("")
+      }
+    } else {
+      showToast("Por favor, completa todos los campos.")
     }
   }
 
@@ -498,11 +519,13 @@ export default function Bookstore() {
                 <BookOpen className="size-7 text-white" />
               </div>
               <h1 className="text-2xl font-bold text-[#1a2744]">MercadoLibro</h1>
-              <p className="mt-2 text-sm text-muted-foreground">Ingresa tus credenciales para continuar</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {isRegistering ? "Crea una cuenta para comenzar" : "Ingresa tus credenciales para continuar"}
+              </p>
             </div>
 
             <div className="space-y-5">
-              {loginError && (
+              {loginError && !isRegistering && (
                 <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-center text-sm font-medium text-red-600">
                   Usuario o contraseña incorrectos. Podés usar:<br /> <span className="font-bold">usuario@ejemplo.com</span> / <span className="font-bold">123456</span>
                 </div>
@@ -532,22 +555,32 @@ export default function Bookstore() {
                   placeholder="••••••••"
                   className="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-foreground transition-all hover:border-[#1a2744]/50 focus:border-[#1a2744] focus:outline-none focus:ring-4 focus:ring-[#1a2744]/10"
                 />
-                <div className="flex justify-center pt-1">
-                  <button type="button" className="text-sm font-medium text-[#1a2744] hover:underline focus:outline-none">Olvidé mi contraseña</button>
-                </div>
+                {!isRegistering && (
+                  <div className="flex justify-center pt-1">
+                    <button type="button" className="text-sm font-medium text-[#1a2744] hover:underline focus:outline-none">Olvidé mi contraseña</button>
+                  </div>
+                )}
               </div>
               <Button
-                onClick={handleLogin}
+                onClick={isRegistering ? handleRegister : handleLogin}
                 className="mt-6 w-full bg-[#1a2744] py-6 text-base font-semibold text-white transition-all hover:bg-[#1a2744]/90 hover:shadow-lg disabled:opacity-50"
                 disabled={!username || !password}
               >
-                Iniciar Sesión
+                {isRegistering ? "Crear cuenta" : "Iniciar Sesión"}
               </Button>
 
               <div className="mt-6 text-center text-sm text-muted-foreground">
-                ¿No tienes una cuenta?{" "}
-                <button type="button" className="font-semibold text-[#1a2744] hover:underline focus:outline-none">
-                  Crear cuenta
+                {isRegistering ? "¿Ya tienes una cuenta?" : "¿No tienes una cuenta?"} {" "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsRegistering(!isRegistering)
+                    setLoginError(false)
+                    setPassword("")
+                  }}
+                  className="font-semibold text-[#1a2744] hover:underline focus:outline-none"
+                >
+                  {isRegistering ? "Iniciar sesión" : "Crear cuenta"}
                 </button>
               </div>
             </div>
