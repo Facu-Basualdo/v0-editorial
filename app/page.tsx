@@ -52,7 +52,9 @@ interface Book {
   description: string
   preview: string[]
   coverColor: string
+  imageUrl?: string
 }
+
 
 // Mock Data
 const mockBooks: Book[] = [
@@ -70,6 +72,7 @@ const mockBooks: Book[] = [
       "Los árboles binarios de búsqueda permiten operaciones de inserción, eliminación y búsqueda en tiempo logarítmico, haciéndolos ideales para bases de datos y sistemas de archivos.",
     ],
     coverColor: "bg-blue-600",
+    imageUrl: "https://picsum.photos/seed/101/400/600",
   },
   {
     id: 2,
@@ -85,6 +88,7 @@ const mockBooks: Book[] = [
       "La reforma constitucional de 1994 introdujo importantes modificaciones, incluyendo la jerarquía constitucional de tratados de derechos humanos y la creación de nuevos órganos de control.",
     ],
     coverColor: "bg-red-700",
+    imageUrl: "https://picsum.photos/seed/102/400/600",
   },
   {
     id: 3,
@@ -100,6 +104,7 @@ const mockBooks: Book[] = [
       "La implementación exitosa de una estrategia depende de la alineación entre estructura, cultura y sistemas de la organización, requiriendo liderazgo efectivo y comunicación clara.",
     ],
     coverColor: "bg-green-600",
+    imageUrl: "https://picsum.photos/seed/103/400/600",
   },
   {
     id: 4,
@@ -115,6 +120,7 @@ const mockBooks: Book[] = [
       "Las políticas monetarias del banco central, como las tasas de interés y la emisión de dinero, son herramientas fundamentales para estabilizar la economía y controlar la inflación.",
     ],
     coverColor: "bg-purple-600",
+    imageUrl: "https://picsum.photos/seed/104/400/600",
   },
   {
     id: 5,
@@ -130,6 +136,7 @@ const mockBooks: Book[] = [
       "Las bases de datos NoSQL como MongoDB ofrecen flexibilidad en el esquema de datos, siendo ideales para aplicaciones que requieren escalabilidad horizontal y manejo de datos no estructurados.",
     ],
     coverColor: "bg-cyan-600",
+    imageUrl: "https://picsum.photos/seed/105/400/600",
   },
   {
     id: 6,
@@ -145,6 +152,7 @@ const mockBooks: Book[] = [
       "La franquicia combina la cesión de marca, know-how y asistencia técnica, creando una red de negocios independientes pero integrados bajo una imagen corporativa común.",
     ],
     coverColor: "bg-amber-700",
+    imageUrl: "https://picsum.photos/seed/106/400/600",
   },
   {
     id: 7,
@@ -160,6 +168,7 @@ const mockBooks: Book[] = [
       "El desarrollo profesional continuo y los planes de carrera son fundamentales para retener el talento y mantener la motivación de los colaboradores en un mercado laboral competitivo.",
     ],
     coverColor: "bg-pink-600",
+    imageUrl: "https://picsum.photos/seed/107/400/600",
   },
   {
     id: 8,
@@ -175,6 +184,7 @@ const mockBooks: Book[] = [
       "La gestión del capital de trabajo requiere equilibrar liquidez y rentabilidad, administrando eficientemente cuentas por cobrar, inventarios y cuentas por pagar.",
     ],
     coverColor: "bg-indigo-600",
+    imageUrl: "https://picsum.photos/seed/108/400/600",
   },
   {
     id: 9,
@@ -188,6 +198,7 @@ const mockBooks: Book[] = [
       "Se espera que los estudiantes sean capaces de: Modelar los procesos de desarrollo de software, ya sea a través de la UML o enfoques jerárquicos, analizar y diseñar sistemas informáticos, aprender sobre el ciclo de vida del software, desde la planificación hasta la implementación y el mantenimiento, aprender, aplicar la cultura profesional en el desarrollo de software, aplicar soluciones informáticas para resolver problemas. Los contenidos de desarrollo de software e Implementación de Tecnología es una asignatura esencial para la formación de profesionales en el ámbito de la informática. Proporciona a los estudiantes las competencias necesarias para el desarrollo de software y la implementación de tecnología, lo que les permitirá desempeñarse exitosamente en el campo laboral."
     ],
     coverColor: "bg-indigo-600",
+    imageUrl: "https://picsum.photos/seed/209/400/600",
   },
   {
     id: 10,
@@ -198,6 +209,7 @@ const mockBooks: Book[] = [
     description: "Una novela sobre la historia de la filosofía que invita a reflexionar sobre las grandes preguntas del pensamiento humano a través de un entretenido relato de ficción.",
     preview: ["Un día, al volver del instituto, Sofía Amundsen encuentra una carta en el buzón con una única pregunta: ¿Quién eres? Así comienza un apasionante viaje a lo largo y ancho de la historia de la filosofía."],
     coverColor: "bg-teal-600",
+    imageUrl: "https://picsum.photos/seed/110/400/600",
   },
   {
     id: 11,
@@ -208,6 +220,7 @@ const mockBooks: Book[] = [
     description: "Un revolucionario recorrido por la mente humana que explica los dos sistemas que modelan cómo pensamos: el sistema 1, rápido, intuitivo y emocional, y el sistema 2, más lento, deliberativo y lógico.",
     preview: ["La premisa básica de este libro es que es más fácil reconocer los errores de los demás que los nuestros. Nuestros sesgos cognitivos moldean gran parte de nuestras decisiones cotidianas sin que nos demos cuenta."],
     coverColor: "bg-orange-600",
+    imageUrl: "https://picsum.photos/seed/111/400/600",
   },
   {
     id: 12,
@@ -218,6 +231,7 @@ const mockBooks: Book[] = [
     description: "La obra maestra del realismo mágico latinoamericano. Narra la historia de la familia Buendía a lo largo de siete generaciones en el pueblo mítico de Macondo.",
     preview: ["Muchos años después, frente al pelotón de fusilamiento, el coronel Aureliano Buendía había de recordar aquella tarde remota en que su padre lo llevó a conocer el hielo."],
     coverColor: "bg-emerald-700",
+    imageUrl: "https://picsum.photos/seed/112/400/600",
   },
   {
     id: 13,
@@ -228,6 +242,7 @@ const mockBooks: Book[] = [
     description: "Un fascinante recorrido por la breve historia de la humanidad. Desde los primeros humanos que caminaron sobre la Tierra hasta los radicales y a veces devastadores avances de las revoluciones cognitiva, agrícola y científica.",
     preview: ["Hace cien mil años, al menos seis especies de homínidos habitaban la Tierra. Hoy en día, solo queda una: el Homo sapiens. ¿Cómo logró nuestra especie imponerse en la lucha por la supervivencia y convertirse en el ser dominante del planeta?"],
     coverColor: "bg-slate-700",
+    imageUrl: "https://picsum.photos/seed/113/400/600",
   },
   {
     id: 14,
@@ -238,12 +253,33 @@ const mockBooks: Book[] = [
     description: "Un clásico de la literatura distópica. En una sociedad futura donde los libros están prohibidos, el bombero Guy Montag empieza a cuestionarse su labor de destruirlos.",
     preview: ["Constituía un placer especial ver las cosas consumidas, ver los objetos ennegrecidos y cambiados. Con la punta de bronce del soplete en sus puños, con aquella gigantesca serpiente pitón escupiendo su queroseno venenoso sobre el mundo, la sangre le latía en la cabeza y sus manos eran las de un fantástico director tocando todas las sinfonías del fuego y de las llamas para destruir los guiñapos y ruinas de la Historia."],
     coverColor: "bg-red-900",
+    imageUrl: "https://picsum.photos/seed/114/400/600",
   }
 ]
 
 const categories = ["Informática", "Derecho", "Administración", "Economía", "Filosofía", "Psicología", "Literatura Clásica", "Historia", "Ciencia Ficción"]
 
 type View = "login" | "catalog" | "detail" | "cart" | "library" | "account" | "favorites"
+
+// Book Cover Component
+function BookCover({ book, className = "" }: { book: Book; className?: string }) {
+  const [imageError, setImageError] = useState(false)
+
+  return (
+    <div className={`${className} ${!imageError && book.imageUrl ? "" : book.coverColor} flex items-center justify-center overflow-hidden relative`}>
+      {!imageError && book.imageUrl ? (
+        <img
+          src={book.imageUrl}
+          alt={book.title}
+          onError={() => setImageError(true)}
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <BookOpen className="size-16 text-white/80 transition-transform duration-300 group-hover:scale-110" />
+      )}
+    </div>
+  )
+}
 
 export default function Bookstore() {
   const [currentView, setCurrentView] = useState<View>("catalog")
@@ -662,8 +698,22 @@ export default function Bookstore() {
                                 }}
                                 className="group/result flex gap-4 p-3 cursor-pointer hover:bg-secondary/60 rounded-md transition-colors items-center border border-transparent hover:border-border/50"
                               >
-                                <div className={`${book.coverColor} size-12 sm:size-14 shrink-0 rounded flex items-center justify-center shadow-sm`}>
-                                  <BookOpen className="size-6 sm:size-7 text-white/80 transition-transform group-hover/result:scale-110" />
+                                <div className="size-12 sm:size-14 shrink-0 rounded shadow-sm overflow-hidden">
+                                  {book.imageUrl && !book.imageUrl.includes("undefined") ? (
+                                    <img
+                                      src={book.imageUrl}
+                                      alt={book.title}
+                                      onError={(e) => {
+                                        e.currentTarget.style.display = "none"
+                                        e.currentTarget.parentElement!.className += ` ${book.coverColor} flex items-center justify-center`
+                                      }}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <div className={`${book.coverColor} w-full h-full flex items-center justify-center`}>
+                                      <BookOpen className="size-6 sm:size-7 text-white/80" />
+                                    </div>
+                                  )}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <h4 className="font-semibold text-sm sm:text-base text-card-foreground group-hover/result:text-[#1a2744] truncate transition-colors">{book.title}</h4>
@@ -745,11 +795,7 @@ export default function Bookstore() {
                       className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all hover:shadow-md cursor-pointer hover:border-[#1a2744]/30"
                     >
                       {/* Book Cover */}
-                      <div
-                        className={`${book.coverColor} flex h-48 shrink-0 items-center justify-center`}
-                      >
-                        <BookOpen className="size-16 text-white/80 transition-transform duration-300 group-hover:scale-110" />
-                      </div>
+                      <BookCover book={book} className="h-48 shrink-0" />
                       {/* Book Info */}
                       <div className="flex flex-1 flex-col p-4">
                         <div className="flex">
@@ -826,11 +872,7 @@ export default function Bookstore() {
 
             <div className="grid gap-8 lg:grid-cols-3">
               {/* Book Cover */}
-              <div
-                className={`${selectedBook.coverColor} flex h-80 items-center justify-center rounded-lg lg:h-96`}
-              >
-                <BookOpen className="size-24 text-white/80" />
-              </div>
+              <BookCover book={selectedBook} className="h-80 rounded-lg lg:h-96" />
 
               {/* Book Info */}
               <div className="lg:col-span-2">
@@ -932,11 +974,7 @@ export default function Bookstore() {
                       }}
                       className="flex items-center gap-4 rounded-lg border border-border bg-card p-4 hover:border-[#1a2744]/30 hover:shadow-md transition-all cursor-pointer group"
                     >
-                      <div
-                        className={`${item.coverColor} flex size-20 shrink-0 items-center justify-center rounded`}
-                      >
-                        <BookOpen className="size-8 text-white/80 transition-transform duration-300 group-hover:scale-110" />
-                      </div>
+                      <BookCover book={item} className="size-20 shrink-0 rounded" />
                       <div className="flex-1">
                         <h3 className="font-semibold text-card-foreground group-hover:text-[#1a2744] transition-colors">
                           {item.title}
@@ -1100,11 +1138,7 @@ export default function Bookstore() {
                     className="flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm cursor-pointer hover:shadow-md hover:border-[#1a2744]/30 transition-all"
                   >
                     {/* Book Cover */}
-                    <div
-                      className={`${book.coverColor} flex h-40 shrink-0 items-center justify-center`}
-                    >
-                      <BookOpen className="size-12 text-white/80" />
-                    </div>
+                    <BookCover book={book} className="h-40 shrink-0" />
                     {/* Book Info */}
                     <div className="flex flex-1 flex-col p-4">
                       <h3 className="mb-1 line-clamp-2 font-semibold text-card-foreground">
@@ -1186,11 +1220,7 @@ export default function Bookstore() {
                     className="flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm"
                   >
                     {/* Book Cover */}
-                    <div
-                      className={`${book.coverColor} flex h-40 shrink-0 items-center justify-center`}
-                    >
-                      <BookOpen className="size-12 text-white/80" />
-                    </div>
+                    <BookCover book={book} className="h-40 shrink-0" />
                     {/* Book Info */}
                     <div className="flex flex-1 flex-col p-4">
                       <h3 className="mb-1 line-clamp-2 font-semibold text-card-foreground">
