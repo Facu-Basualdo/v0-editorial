@@ -308,6 +308,9 @@ export default function Bookstore() {
   const [registeredUsers, setRegisteredUsers] = useState<{email: string, password: string}[]>([
     { email: "usuario@ejemplo.com", password: "123456" }
   ])
+  const [couponCode, setCouponCode] = useState("")
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
+  const [couponError, setCouponError] = useState<string | null>(null)
 
   // Filter books based on category (searchQuery no afecta al catálogo visual)
   const filteredBooks = mockBooks.filter((book) => {
@@ -365,11 +368,29 @@ export default function Bookstore() {
   const cartTotal = cart.reduce((sum, item) => sum + item.price, 0)
   const cartCount = cart.length
 
+  const discountAmount = appliedCoupon === "403" ? cartTotal * 0.99 : 0
+  const finalTotal = cartTotal - discountAmount
+
+  const applyCoupon = () => {
+    const code = couponCode.trim()
+    if (code === "403") {
+      setAppliedCoupon(code)
+      setCouponError(null)
+      showToast("¡Cupón aplicado! 99% de descuento")
+    } else {
+      setCouponError("Cupón inválido")
+      setAppliedCoupon(null)
+    }
+  }
+
   // Purchase function
   const confirmPurchase = () => {
     setLibrary([...library, ...cart])
     setCart([])
     setPaymentMethod("")
+    setCouponCode("")
+    setAppliedCoupon(null)
+    setCouponError(null)
     setCurrentView("library")
   }
 
@@ -1011,12 +1032,62 @@ export default function Bookstore() {
                       <span>Subtotal</span>
                       <span>{formatPrice(cartTotal)}</span>
                     </div>
+                    {appliedCoupon && (
+                      <div className="flex justify-between text-green-600">
+                        <span>Descuento (cupón {appliedCoupon})</span>
+                        <span>-{formatPrice(discountAmount)}</span>
+                      </div>
+                    )}
                     <div className="border-t border-border pt-2">
                       <div className="flex justify-between text-lg font-bold text-card-foreground">
                         <span>Total</span>
-                        <span>{formatPrice(cartTotal)}</span>
+                        <span>{formatPrice(finalTotal)}</span>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Coupon */}
+                  <div className="mb-4">
+                    <label className="mb-2 block text-sm font-medium text-card-foreground">
+                      Cupón de descuento
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={couponCode}
+                        onChange={(e) => {
+                          setCouponCode(e.target.value)
+                          setCouponError(null)
+                        }}
+                        placeholder="Ingresá tu cupón"
+                        disabled={!!appliedCoupon}
+                        className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm focus:border-[#1a2744] focus:outline-none focus:ring-1 focus:ring-[#1a2744] disabled:opacity-50"
+                      />
+                      {appliedCoupon ? (
+                        <button
+                          onClick={() => {
+                            setAppliedCoupon(null)
+                            setCouponCode("")
+                          }}
+                          className="rounded-md border border-border px-3 py-2 text-sm text-muted-foreground hover:bg-muted"
+                        >
+                          Quitar
+                        </button>
+                      ) : (
+                        <button
+                          onClick={applyCoupon}
+                          className="rounded-md bg-[#1a2744] px-3 py-2 text-sm text-white hover:bg-[#243761]"
+                        >
+                          Aplicar
+                        </button>
+                      )}
+                    </div>
+                    {couponError && (
+                      <p className="mt-1 text-xs text-red-500">{couponError}</p>
+                    )}
+                    {appliedCoupon && (
+                      <p className="mt-1 text-xs text-green-600">¡Cupón aplicado! 99% de descuento</p>
+                    )}
                   </div>
 
                   <div className="mb-4">
