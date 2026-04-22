@@ -549,8 +549,21 @@ export default function Bookstore() {
       <main className={`w-full flex-1 mx-auto max-w-[1600px] px-4 md:px-8 py-8 ${currentView === "login" ? "flex items-center justify-center p-4" : ""}`}>
         {/* Login View */}
         {currentView === "login" && (
-          <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-xl">
-            <div className="mb-8 flex flex-col items-center">
+          <div className="flex w-full max-w-md flex-col">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setCurrentView("catalog")
+                setLoginError(false)
+                setIsRegistering(false)
+              }}
+              className="mb-4 self-start text-muted-foreground hover:bg-transparent hover:text-foreground"
+            >
+              <ArrowLeft className="mr-2 size-4" />
+              Volver al catálogo
+            </Button>
+            <div className="w-full rounded-2xl border border-border bg-card p-8 shadow-xl">
+              <div className="mb-8 flex flex-col items-center">
               <div className="mb-4 flex size-14 items-center justify-center rounded-xl bg-[#1a2744] shadow-md">
                 <BookOpen className="size-7 text-white" />
               </div>
@@ -563,7 +576,7 @@ export default function Bookstore() {
             <div className="space-y-5">
               {loginError && !isRegistering && (
                 <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-center text-sm font-medium text-red-600">
-                  Usuario o contraseña incorrectos. Podés usar:<br /> <span className="font-bold">usuario@ejemplo.com</span> / <span className="font-bold">123456</span>
+                  Usuario o contraseña incorrectos, volvé a intentarlo
                 </div>
               )}
               <div className="space-y-2">
@@ -620,6 +633,7 @@ export default function Bookstore() {
                 </button>
               </div>
             </div>
+          </div>
           </div>
         )}
 
